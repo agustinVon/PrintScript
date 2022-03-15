@@ -47,3 +47,7 @@ application {
     // Define the main class for the application.
     mainClass = 'PrintScript.App'
 }
+
+test {
+    useJUnitPlatform()
+}
