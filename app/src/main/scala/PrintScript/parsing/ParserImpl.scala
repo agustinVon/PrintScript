@@ -8,8 +8,7 @@ import scala.jdk.CollectionConverters._
 class ParserImpl extends Parser {
   var tree:Option[ASTree] = None : Option[ASTree]
   override def parse(content:String, list: List[Token]): ASTree = {
-    val noSpaceList = list.filter(_.getType != TokenTypesImpl.WHITESPACE)
-    val tokenIterator = TokenIterator.create(content, noSpaceList.asJava)
+    val tokenIterator = TokenIterator.create(content, list.asJava)
     val tokenConsumer = TokenConsumerImpl(tokenIterator)
     val firstToken = tokenConsumer.peekAny(TokenTypesImpl.LET)
     firstToken.getToken.getType match {
@@ -29,6 +28,7 @@ class ParserImpl extends Parser {
             tokenConsumer.consume(TokenTypesImpl.NUMBER)
         }
     }
+    tree.getOrElse(throw new RuntimeException)
 
   }
 }

@@ -17,14 +17,18 @@ class LexerImpl extends Lexer{
         case None => {
           throw new RuntimeException
         }
-        case Some(TokenTypesImpl.SEMICOLON) => {
-          tokens = tokens :+ new Token(TokenTypesImpl.SEMICOLON, position, lexMatch.length, new LexicalRange(column, line, column + lexMatch.length, line ))
+        case Some(TokenTypesImpl.WHITESPACE) => {
           column = lexMatch.length + column
+          position = lexMatch.length + position
+        }
+        case Some(TokenTypesImpl.SEMICOLON) => {
+          tokens = tokens :+ new Token(TokenTypesImpl.SEMICOLON, position, position + lexMatch.length, new LexicalRange(column, line, column + lexMatch.length, line ))
+          column = 0
           position = lexMatch.length + position
           line = line + 1
         }
         case Some(x) => {
-          tokens = tokens :+ new Token(x, position, lexMatch.length, new LexicalRange(column, line, column + lexMatch.length, line ))
+          tokens = tokens :+ new Token(x, position, position + lexMatch.length, new LexicalRange(column, line, column + lexMatch.length, line ))
           column = lexMatch.length + column
           position = lexMatch.length + position
         }
