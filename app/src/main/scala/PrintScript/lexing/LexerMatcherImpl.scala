@@ -4,8 +4,9 @@ import org.austral.ingsis.printscript.common.TokenType
 
 import java.util.regex.{Matcher, Pattern}
 
-case class LexerMatcherImpl (val pattern:Pattern) {
+case class LexerMatcherImpl (pattern:Pattern) extends LexerMatcher {
   def getMatcher(input: String): Matcher = pattern.matcher(input)
+  override def getPattern: Pattern = pattern
 }
 
 object LexerMatcherImpl {
