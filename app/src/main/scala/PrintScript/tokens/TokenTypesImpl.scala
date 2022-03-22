@@ -62,6 +62,10 @@ object TokenTypesImpl{
   case object SEMICOLON extends ComparableToken {
     override def getType: String = "SEMICOLON"
   }
+
+  case object EOL extends ComparableToken {
+    override def getType: String = "EOL"
+  }
   case class UnknownToken(name: String) extends TokenType {
     override def getType:String = "UNKNOWN"
     override def equals(tokenType: TokenType): Boolean = false

@@ -29,6 +29,6 @@ class ParserImpl extends Parser {
         }
     }
     tree.getOrElse(throw new RuntimeException)
-
+      tree.getOrElse(throw new RuntimeException)
   }
 }

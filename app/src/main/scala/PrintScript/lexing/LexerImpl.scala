@@ -21,8 +21,7 @@ class LexerImpl extends Lexer{
           column = lexMatch.length + column
           position = lexMatch.length + position
         }
-        case Some(TokenTypesImpl.SEMICOLON) => {
-          tokens = tokens :+ new Token(TokenTypesImpl.SEMICOLON, position, position + lexMatch.length, new LexicalRange(column, line, column + lexMatch.length, line ))
+        case Some(TokenTypesImpl.EOL) => {
           column = 0
           position = lexMatch.length + position
           line = line + 1

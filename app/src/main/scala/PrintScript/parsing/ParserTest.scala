@@ -1,6 +1,5 @@
 package PrintScript.parsing
 
-import PrintScript.lexing.LexTester.lexer
 import PrintScript.lexing.LexerImpl
 
 object ParserTest extends App {

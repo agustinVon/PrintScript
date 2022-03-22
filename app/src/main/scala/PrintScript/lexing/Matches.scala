@@ -21,6 +21,7 @@ case class Matches() {
     (TokenTypesImpl.IDENTIFIER, LexerMatcherImpl.fromRegex(TokenTypesImpl.IDENTIFIER, "(?:\\b[_a-zA-Z]|\\B\\$)[_\\$a-zA-Z0-9]*+")),
     (TokenTypesImpl.WHITESPACE, LexerMatcherImpl.fromRegex(TokenTypesImpl.WHITESPACE, " ")),
     (TokenTypesImpl.COLON, LexerMatcherImpl.fromRegex(TokenTypesImpl.COLON, "[:]")),
-    (TokenTypesImpl.SEMICOLON, LexerMatcherImpl.fromRegex(TokenTypesImpl.SEMICOLON, "[;]"))
+    (TokenTypesImpl.SEMICOLON, LexerMatcherImpl.fromRegex(TokenTypesImpl.SEMICOLON, "[;]")),
+    (TokenTypesImpl.EOL, LexerMatcherImpl.fromRegex(TokenTypesImpl.EOL, "[\\n]"))
   )
 }
