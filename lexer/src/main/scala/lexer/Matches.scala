@@ -1,13 +1,13 @@
-package PrintScript.lexing
+package lexer
 
-import PrintScript.tokens.TokenTypesImpl
+import Tokens.TokenTypesImpl
 import org.austral.ingsis.printscript.common.TokenType
 
 case class Matches() {
   def getMatches: List[(TokenType, LexerMatcher)] = List(
     (TokenTypesImpl.LET, LexerMatcherImpl.fromRegex(TokenTypesImpl.LET, "let")),
     (TokenTypesImpl.PRINTLN, LexerMatcherImpl.fromRegex(TokenTypesImpl.PRINTLN, "println")),
-    (TokenTypesImpl.TYPESTRING, LexerMatcherImpl.fromRegex(TokenTypesImpl.TYPESTRING,"string")),
+    (TokenTypesImpl.TYPESTRING, LexerMatcherImpl.fromRegex(TokenTypesImpl.TYPESTRING, "string")),
     (TokenTypesImpl.TYPENUMBER, LexerMatcherImpl.fromRegex(TokenTypesImpl.TYPENUMBER, "number")),
     (TokenTypesImpl.PLUS, LexerMatcherImpl.fromRegex(TokenTypesImpl.PLUS, "[+]")),
     (TokenTypesImpl.MINUS, LexerMatcherImpl.fromRegex(TokenTypesImpl.MINUS, "[-]")),

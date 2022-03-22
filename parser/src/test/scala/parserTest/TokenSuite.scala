@@ -1,4 +1,4 @@
-package PrintScript.parsing
+package parserTest
 
 import org.junit.runner.RunWith
 import org.scalatest.funsuite.AnyFunSuite

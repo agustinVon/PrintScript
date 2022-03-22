@@ -1,6 +1,7 @@
-package PrintScript.parsing
+package parser
 
 import org.austral.ingsis.printscript.common.Token
+
 
 sealed trait ASTree
 case class Leaf(value: Token) extends ASTree

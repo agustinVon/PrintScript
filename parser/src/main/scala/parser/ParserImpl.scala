@@ -1,9 +1,12 @@
-package PrintScript.parsing
-import PrintScript.tokens.TokenTypesImpl
-import org.austral.ingsis.printscript.common.{StringRead, Token, TokenConsumer}
+package parser
+
+import Tokens.TokenTypesImpl
+import org.austral.ingsis.printscript.common.Token
 import org.austral.ingsis.printscript.parser.TokenIterator
+import org.austral.ingsis.printscript.common.{StringRead, Token, TokenConsumer}
 
 import scala.jdk.CollectionConverters._
+
 
 class ParserImpl extends Parser {
   var tree:Option[ASTree] = None : Option[ASTree]

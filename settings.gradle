@@ -9,3 +9,6 @@
 
 rootProject.name = 'PrintScript'
 include('app')
+include('parser')
+include('lexer')
+include('commons')
