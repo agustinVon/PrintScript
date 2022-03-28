@@ -1,6 +1,6 @@
 package lexer
 
-import Tokens.TokenTypesImpl
+import tokens.TokenTypesImpl
 import org.austral.ingsis.printscript.common.{LexicalRange, Token, TokenType}
 
 class LexerImpl extends Lexer{

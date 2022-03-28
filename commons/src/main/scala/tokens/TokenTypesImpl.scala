@@ -1,4 +1,4 @@
-package Tokens
+package tokens
 
 import org.austral.ingsis.printscript.common.TokenType
 
