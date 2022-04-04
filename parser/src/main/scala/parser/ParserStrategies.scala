@@ -1,8 +1,8 @@
 package parser
 
-import ast.{ASTree, Branch, Leaf, StringBranch}
+import ast.{ASTree, Branch, Leaf}
 import org.austral.ingsis.printscript.common.TokenConsumer
-import parser.traits.{Parser, SectionParser}
+import parser.traits.SectionParser
 import tokens.TokenTypesImpl
 
 object ParserStrategies {
@@ -50,19 +50,6 @@ object ParserStrategies {
     override def canBeParsed(consumer: TokenConsumer): Boolean = consumer.peekAny(TokenTypesImpl.STRING, TokenTypesImpl.NUMBER) != null
   }
 
-  case object Operation extends SectionParser() {
-    override def parse(consumer: TokenConsumer, tree: Option[ASTree]): ASTree = {
-      val operation = consumer.consumeAny(TokenTypesImpl.PLUS, TokenTypesImpl.MINUS, TokenTypesImpl.DIVIDEDBY, TokenTypesImpl.TIMES)
-      tree match {
-        case Some(Leaf(x)) => Branch(List(Leaf(x)), operation)
-        case Some(Branch(list, node)) => Branch(List(Branch(list, node)), operation)
-        case _ => throw new IllegalArgumentException
-      }
-    }
-
-    override def canBeParsed(consumer: TokenConsumer): Boolean = consumer.peekAny(TokenTypesImpl.PLUS, TokenTypesImpl.MINUS, TokenTypesImpl.DIVIDEDBY, TokenTypesImpl.TIMES) != null
-  }
-
   case object Variable extends SectionParser() {
     override def parse(consumer: TokenConsumer, tree: Option[ASTree]): ASTree = {
       val identifier = consumer.consume(TokenTypesImpl.IDENTIFIER)
@@ -75,6 +62,19 @@ object ParserStrategies {
     }
 
     override def canBeParsed(consumer: TokenConsumer): Boolean = consumer.peek(TokenTypesImpl.IDENTIFIER) != null
+  }
+
+  case object Operation extends SectionParser() {
+    override def parse(consumer: TokenConsumer, tree: Option[ASTree]): ASTree = {
+      val operation = consumer.consumeAny(TokenTypesImpl.PLUS, TokenTypesImpl.MINUS, TokenTypesImpl.DIVIDEDBY, TokenTypesImpl.TIMES)
+      tree match {
+        case Some(Leaf(x)) => Branch(List(Leaf(x)), operation)
+        case Some(Branch(list, node)) => Branch(List(Branch(list, node)), operation)
+        case _ => throw new IllegalArgumentException
+      }
+    }
+
+    override def canBeParsed(consumer: TokenConsumer): Boolean = consumer.peekAny(TokenTypesImpl.PLUS, TokenTypesImpl.MINUS, TokenTypesImpl.DIVIDEDBY, TokenTypesImpl.TIMES) != null
   }
 
   case object PrintlnFunction extends SectionParser() {

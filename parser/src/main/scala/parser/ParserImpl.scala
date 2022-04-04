@@ -1,17 +1,14 @@
 package parser
 
-import ast.{ASTree, Branch, Leaf, StringBranch}
+import ast.{ASTree, StringBranch}
 import tokens.TokenTypesImpl
 import org.austral.ingsis.printscript.common.Token
-import org.austral.ingsis.printscript.parser.{Content, TokenIterator}
-import org.austral.ingsis.printscript.common.{StringRead, Token, TokenConsumer}
+import org.austral.ingsis.printscript.parser.TokenIterator
+import org.austral.ingsis.printscript.common.TokenConsumer
 import parser.ParserStrategies.{Assignation, Declaration, Literal, PrintlnFunction, Variable, Operation}
 import parser.exceptions.{NoContentInFileException, NoContentInLineException, NoStrategyException}
 import parser.traits.{Parser, SectionParser}
-
 import scala.annotation.tailrec
-import scala.jdk.CollectionConverters._
-
 
 class ParserImpl extends Parser {
   private val strategies: List[SectionParser] = List(Declaration, Assignation, Literal, Variable, PrintlnFunction, Operation)
@@ -39,7 +36,6 @@ class ParserImpl extends Parser {
       consumer.consumeAny(TokenTypesImpl.EOL, TokenTypesImpl.SEMICOLON)
       tree.getOrElse(throw NoContentInLineException())
     } else  {
-      val peek = consumer.peekAny(TokenTypesImpl.STRING, TokenTypesImpl.NUMBER)
       val strategy = strategies.find(strategy => strategy.canBeParsed(consumer)).getOrElse(throw NoStrategyException())
       val resultTree = strategy.parse(consumer, tree)
       sentenceParse(Option(resultTree), consumer)

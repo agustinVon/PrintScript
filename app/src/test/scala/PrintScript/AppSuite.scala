@@ -3,13 +3,11 @@
  */
 package PrintScript
 
-import org.scalatest.funsuite.AnyFunSuite
-import org.junit.runner.RunWith
-import org.scalatestplus.junit.JUnitRunner
+import org.junit.jupiter.api.Test
 
-@RunWith(classOf[JUnitRunner])
-class AppSuite extends AnyFunSuite {
-  test("App has a greeting") {
+class AppSuite{
+  @Test
+  def appHasAGreeting(): Unit = {
     assert(App.greeting() != null)
   }
 }
