@@ -1,134 +1,149 @@
-import ast.{Branch, Leaf, StringBranch}
-import lexer.LexerImpl
+import ast.{Expression, LiteralNumber, LiteralString, Operation, Variable, VariableAssignation}
+import lexer.{LexerImpl, StringProgramSource}
 import org.austral.ingsis.printscript.parser.TokenIterator
 import org.junit.jupiter.api.Test
-import parser.ParserStrategies.{Assignation, Declaration, Literal}
+import parser.ParserStrategies.{ExpressionParser, VariableParser}
 import parser.{ParserImpl, TokenConsumerImpl}
 import tokens.TokenTypesImpl
 
 import scala.jdk.CollectionConverters._
 
 class ParserSuite  {
-  @Test
-  def declarationShouldBeaAbleToParse() = {
-    val content= "let a:string"
-    val tokens = new LexerImpl().lex(content).asJava
-    val tokenConsumer = TokenConsumerImpl(TokenIterator.create(content, tokens))
-    Declaration.canBeParsed(tokenConsumer)
+
+  private def getConsumer(content:String): TokenConsumerImpl = {
+    val source = StringProgramSource(content)
+    val tokens = new LexerImpl().lex(source).asJava
+    TokenConsumerImpl(TokenIterator.create(content, tokens))
   }
 
   @Test
-  def assignationShouldBeAbleToParse() = {
-    val content= "="
-    val tokens = new LexerImpl().lex(content).asJava
-    val tokenConsumer = TokenConsumerImpl(TokenIterator.create(content, tokens))
-    Assignation.canBeParsed(tokenConsumer)
-  }
+  def expressionParserShouldParseLiterals(): Unit = {
+    val consumer = getConsumer("\"test\"")
 
-  @Test
-  def literalShouldBeAbleToParse() = {
-    val content= "\"test\""
-    val tokens = new LexerImpl().lex(content).asJava
-    val tokenConsumer = TokenConsumerImpl(TokenIterator.create(content, tokens))
-    Literal.canBeParsed(tokenConsumer)
-  }
+    val expression = ExpressionParser.parse(consumer)
 
-  @Test
-  def declarationShouldBeParsed(): Unit = {
-    val content = "let a:string"
-    val tokens = new LexerImpl().lex(content).asJava
-    val tokenConsumer = TokenConsumerImpl(TokenIterator.create(content, tokens))
-
-    val ast = Declaration.parse(tokenConsumer, None)
-
-    ast match {
-      case Branch(list, node) =>
-        assert(node.component1() == "let")
-        assert(node.component2().getType == TokenTypesImpl.LET)
-        list.head match {
-          case Leaf(value) =>
-            assert(value.component1() == "a")
-            assert(value.component2().getType == TokenTypesImpl.IDENTIFIER)
-          case _ => assert(false)
-        }
-        list(1) match {
-          case Leaf(value) =>
-            assert(value.component1() == "string")
-            assert(value.component2().getType == TokenTypesImpl.TYPESTRING)
-          case _ => assert(false)
-        }
+    expression match {
+      case LiteralString(value) => assert(value.component1().equals("\"test\""))
       case _ => assert(false)
     }
   }
 
   @Test
-  def assignationShouldBeParsed(): Unit = {
-    val content = "let a:string = "
-    val tokens = new LexerImpl().lex(content).asJava
-    val tokenConsumer = TokenConsumerImpl(TokenIterator.create(content, tokens))
-    val declarationAst = Declaration.parse(tokenConsumer, None)
+  def expressionParserShouldParseVariables(): Unit = {
+    val consumer = getConsumer("a")
 
-    val ast = Assignation.parse(tokenConsumer, Option(declarationAst))
+    val expression = ExpressionParser.parse(consumer)
 
-    ast match {
-      case Branch(list, node) =>
-        assert(node.component1() == "=")
-        assert(node.component2().getType == TokenTypesImpl.ASSIGNMENT)
-        list.head match {
-          case Branch(list, node) =>
-            assert(node.component1() == "let")
-            assert(node.component2().getType == TokenTypesImpl.LET)
-            list.head match {
-              case Leaf(value) =>
-                assert(value.component1() == "a")
-                assert(value.component2().getType == TokenTypesImpl.IDENTIFIER)
-              case _ => assert(false)
-            }
-            list(1) match {
-              case Leaf(value) =>
-                assert(value.component1() == "string")
-                assert(value.component2().getType == TokenTypesImpl.TYPESTRING)
-              case _ => assert(false)
-            }
-          case _ => assert(false)
-        }
+    expression match {
+      case Variable(value) => assert(value.component1().equals("a"))
       case _ => assert(false)
     }
   }
 
   @Test
-  def literalDeclarationShouldBeParsed() = {
-    val content = "let a:string = \"test\""
-    val tokens = new LexerImpl().lex(content).asJava
-    val tokenConsumer = TokenConsumerImpl(TokenIterator.create(content, tokens))
-    val declarationAst = Declaration.parse(tokenConsumer, None)
-    val assignationAst = Assignation.parse(tokenConsumer, Option(declarationAst))
+  def expressionParserShouldParseOperations(): Unit = {
+    val consumer = getConsumer("2 + 4")
 
-    val ast = Literal.parse(tokenConsumer, Option(assignationAst))
+    val expression = ExpressionParser.parse(consumer)
 
-    ast match {
-      case Branch(branches, node) =>
-        assert(node.component1().equals("="))
-        branches(1) match {
-          case Leaf(value) =>
-            value.component1().equals("\"test\"")
+    expression match {
+      case Operation(exp1, operator, exp2) => {
+        exp1 match {
+          case LiteralNumber(value) => assert(value.component1() == 2)
+          case _ => assert(false)
         }
+        assert(operator.component1().equals("+"))
+        exp2 match {
+          case LiteralNumber(value) => assert(value.component1() == 4)
+          case _ => assert(false)
+        }
+      }
     }
   }
 
   @Test
-  def shouldParse2OrMoreSentences(): Unit = {
-    val content = "let a:string = \"test\"; a + 2; println(a);"
-    val tokens = new LexerImpl().lex(content).asJava
+  def expressionParserShouldParseVariableAndLiteralOperations(): Unit = {
+    val consumer = getConsumer("a + 4 - 5")
+
+    val expression = ExpressionParser.parse(consumer)
+
+    expression match {
+      case Operation(exp1, operator, exp2) => {
+        exp1 match {
+          case Variable(value) => assert(value.component1().equals("a"))
+          case _ => assert(false)
+        }
+        assert(operator.component1().equals("+"))
+        exp2 match {
+          case Operation(exp3, operator, exp4) => {
+            exp3 match {
+              case LiteralNumber(value) => assert(value.component1() == 4)
+              case _ => assert(false)
+            }
+            assert(operator.component1().equals("-"))
+            exp4 match {
+              case LiteralNumber(value) => assert(value.component1() == 5)
+              case _ => assert(false)
+            }
+          }
+          case _ => assert(false)
+        }
+      }
+    }
+  }
+
+  @Test
+  def assignationOfVariableShouldAssign(): Unit = {
+    val consumer = getConsumer("a = 4")
+
+    val assignation = VariableParser.parse(consumer)
+
+    assignation match {
+      case VariableAssignation(variable, assignation, expression) => {
+        assert(variable.value.component1().equals("a"))
+        assert(assignation.component1().equals("="))
+        expression match {
+          case LiteralNumber(value) => assert(value.component1() == 4)
+          case _ => assert(false)
+        }
+      }
+    }
+  }
+
+  @Test
+  def assignationOfSumShouldAssign():Unit = {
+    val consumer = getConsumer("a = 4 + 5")
+
+    val assignation = VariableParser.parse(consumer)
+
+    assignation match {
+      case VariableAssignation(variable, assignation, expression) => {
+        assert(variable.value.component1().equals("a"))
+        assert(assignation.component1().equals("="))
+        expression match {
+          case Operation(exp1, operator, exp2) => {
+            exp1 match {
+              case LiteralNumber(value) => assert(value.component1() == 4)
+            }
+            assert(operator.component1().equals("+"))
+            exp2 match {
+              case LiteralNumber(value) => assert(value.component1() == 5)
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @Test
+  def tokensShouldBeParsed():Unit = {
+    val content = "let a:string = \"ab\" + \"cd\"; a = \"hello world\";"
+    val lexer = new LexerImpl()
+    val tokens = lexer.lex(StringProgramSource(content))
     val parser = new ParserImpl()
 
-    val ast = parser.parse(content, tokens)
+    val ast = parser.parse(content, tokens.asJava)
 
-    ast match {
-      case StringBranch(branches, node) =>
-        assert(branches.length == 3)
-        assert(node.equals("Lines"))
-      case _ => assert(false)
-    }
+    println(ast)
   }
 }

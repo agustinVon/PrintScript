@@ -1,9 +1,13 @@
 package parser.traits
 
-import ast.ASTree
+import ast.{ASTree, Expression}
 import org.austral.ingsis.printscript.common.TokenConsumer
 
 trait SectionParser {
-  def parse(consumer: TokenConsumer, tree: Option[ASTree]): ASTree
+  def parse(consumer: TokenConsumer): ASTree
   def canBeParsed(consumer: TokenConsumer): Boolean
+}
+
+trait ExpressionSectionParser extends SectionParser {
+  override def parse(consumer: TokenConsumer): Expression
 }
