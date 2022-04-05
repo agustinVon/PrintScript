@@ -5,14 +5,14 @@ import org.austral.ingsis.printscript.common.{LexicalRange, Token, TokenType}
 
 import java.util.regex.{MatchResult, Matcher}
 
-class LexerImpl extends Lexer {
+case class LexerImpl() extends Lexer {
 
   type MatchResult = (String, Option[TokenType])
   type TokenGenerationResult = (Option[Token], Int, Int, Int)
   val matchers: List[(TokenType, LexerMatcher)] = Matches().getMatches
 
-  override def lex(source: String): List[Token] = {
-    val matcher = getMainMatcher(source)
+  override def lex(source: ProgramSource): List[Token] = {
+    val matcher = getMainMatcher(source.getSourceString)
     getTokensListFromMatcher(matcher)
   }
 
