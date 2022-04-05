@@ -1,4 +1,3 @@
 package parser.exceptions
 
-case class NoStrategyException() extends Exception {
-}
+case class NoStrategyException() extends Exception {}

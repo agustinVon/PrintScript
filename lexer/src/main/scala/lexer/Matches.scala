@@ -17,8 +17,14 @@ case class Matches() {
     (TokenTypesImpl.OPENPAREN, LexerMatcherImpl.fromRegex(TokenTypesImpl.OPENPAREN, "[(]")),
     (TokenTypesImpl.CLOSEPAREN, LexerMatcherImpl.fromRegex(TokenTypesImpl.CLOSEPAREN, "[)]")),
     (TokenTypesImpl.NUMBER, LexerMatcherImpl.fromRegex(TokenTypesImpl.NUMBER, "-?[0-9.]+")),
-    (TokenTypesImpl.STRING, LexerMatcherImpl.fromRegex(TokenTypesImpl.STRING, "\\\"([_a-zA-Z0-9 !\\\\/.])*\\\"|'([_a-zA-Z0-9 !\\\\/.])*'")),
-    (TokenTypesImpl.IDENTIFIER, LexerMatcherImpl.fromRegex(TokenTypesImpl.IDENTIFIER, "(?:\\b[_a-zA-Z]|\\B\\$)[_\\$a-zA-Z0-9]*+")),
+    (
+      TokenTypesImpl.STRING,
+      LexerMatcherImpl.fromRegex(TokenTypesImpl.STRING, "\\\"([_a-zA-Z0-9 !\\\\/.])*\\\"|'([_a-zA-Z0-9 !\\\\/.])*'")
+    ),
+    (
+      TokenTypesImpl.IDENTIFIER,
+      LexerMatcherImpl.fromRegex(TokenTypesImpl.IDENTIFIER, "(?:\\b[_a-zA-Z]|\\B\\$)[_\\$a-zA-Z0-9]*+")
+    ),
     (TokenTypesImpl.WHITESPACE, LexerMatcherImpl.fromRegex(TokenTypesImpl.WHITESPACE, " ")),
     (TokenTypesImpl.COLON, LexerMatcherImpl.fromRegex(TokenTypesImpl.COLON, "[:]")),
     (TokenTypesImpl.SEMICOLON, LexerMatcherImpl.fromRegex(TokenTypesImpl.SEMICOLON, "[;]")),

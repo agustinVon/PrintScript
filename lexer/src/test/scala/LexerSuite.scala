@@ -58,4 +58,5 @@ class LexerSuite {
       && tokens(6).getType == TokenTypesImpl.SEMICOLON
       && tokens(7).getType == TokenTypesImpl.EOF)
   }
+
 }

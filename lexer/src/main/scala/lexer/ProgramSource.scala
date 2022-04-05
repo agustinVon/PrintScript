@@ -1,5 +1,5 @@
 package lexer
 
 trait ProgramSource {
-  def getSourceString:String
+  def getSourceString: String
 }

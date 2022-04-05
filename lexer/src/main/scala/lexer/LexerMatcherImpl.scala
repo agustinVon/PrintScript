@@ -4,13 +4,13 @@ import org.austral.ingsis.printscript.common.TokenType
 
 import java.util.regex.{Matcher, Pattern}
 
-case class LexerMatcherImpl (pattern:Pattern) extends LexerMatcher {
+case class LexerMatcherImpl(pattern: Pattern) extends LexerMatcher {
   def getMatcher(input: String): Matcher = pattern.matcher(input)
-  override def getPattern: Pattern = pattern
+  override def getPattern: Pattern       = pattern
 }
 
 object LexerMatcherImpl {
-  def fromMatchers(matchers: List[LexerMatcher]):LexerMatcherImpl = {
+  def fromMatchers(matchers: List[LexerMatcher]): LexerMatcherImpl = {
     LexerMatcherImpl(Pattern.compile(matchers.map(matcher => matcher.getPattern.toString).mkString("|")))
   }
 
