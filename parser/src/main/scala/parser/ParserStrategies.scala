@@ -9,7 +9,6 @@ import tokens.TokenTypesImpl
 object ParserStrategies {
 
   case object DeclarationParser extends SectionParser() {
-
     override def parse(consumer: TokenConsumer): ASTree = {
       val let = consumer.consume(TokenTypesImpl.LET)
       val identifier = consumer.consume(TokenTypesImpl.IDENTIFIER)
@@ -55,9 +54,8 @@ object ParserStrategies {
       } else {
         val variable = VariableParser.parse(consumer)
         variable match {
-          case expression: Expression => {
+          case expression: Expression =>
             parseOperation(consumer, expression)
-          }
           case _ => throw ExpressionExpectedException()
         }
       }

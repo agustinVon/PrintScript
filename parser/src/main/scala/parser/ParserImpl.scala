@@ -6,7 +6,7 @@ import org.austral.ingsis.printscript.common.Token
 import org.austral.ingsis.printscript.parser.TokenIterator
 import org.austral.ingsis.printscript.common.TokenConsumer
 import parser.ParserStrategies.{DeclarationParser, LiteralParser, VariableParser}
-import parser.exceptions.{NoContentInFileException, NoContentInLineException, NoStrategyException}
+import parser.exceptions.NoStrategyException
 import parser.traits.{Parser, SectionParser}
 
 import scala.annotation.tailrec
