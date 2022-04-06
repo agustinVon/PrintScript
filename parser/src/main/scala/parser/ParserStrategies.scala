@@ -100,4 +100,20 @@ object ParserStrategies {
 
     override def canBeParsed(consumer: TokenConsumer): Boolean = consumer.peek(TokenTypesImpl.IDENTIFIER) != null
   }
+
+  case object FunctionParser extends SectionParser() {
+    override def parse(consumer: TokenConsumer): ASTree = {
+      val function = consumer.consume(TokenTypesImpl.PRINTLN)
+      consumer.consume(TokenTypesImpl.OPENPAREN)
+      if (ExpressionParser.canBeParsed(consumer)) {
+        val expression = ExpressionParser.parse(consumer)
+        consumer.consume(TokenTypesImpl.CLOSEPAREN)
+        PrintLn(function, expression)
+      } else {
+        throw ExpressionExpectedException()
+      }
+    }
+
+    override def canBeParsed(consumer: TokenConsumer): Boolean = consumer.peek(TokenTypesImpl.PRINTLN) != null
+  }
 }
