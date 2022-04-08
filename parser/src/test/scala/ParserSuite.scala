@@ -1,4 +1,4 @@
-import ast.{Declaration, DeclarationAssignation, Expression, LiteralNumber, LiteralString, Operation, PrintLn, Root, Variable, VariableAssignation}
+import ast.{Declaration, DeclarationAssignation, Expression, LiteralNumber, LiteralString, Operation, ParenExpression, PrintLn, Root, Variable, VariableAssignation}
 import lexer.{LexerImpl, StringProgramSource}
 import org.austral.ingsis.printscript.parser.TokenIterator
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -45,6 +45,13 @@ class ParserSuite  {
       val consumer = getConsumer("println(\"test\");")
 
       assert(FunctionParser.canBeParsed(consumer))
+    }
+
+    @Test
+    def parenExpressionShouldBeAbleToParse():Unit = {
+      val consumer = getConsumer("(5 + 2)")
+
+      assert(ExpressionParser.canBeParsed(consumer))
     }
   }
 
@@ -216,6 +223,35 @@ class ParserSuite  {
           function.component1().equals("println")
           expression match {
             case LiteralString(value) => assert(value.component1().equals("\"hello world\""))
+            case _ => assert(false)
+          }
+        case _ => assert(false)
+      }
+    }
+
+    @Test
+    def parenExpressionShouldBeParsed():Unit = {
+      val consumer = getConsumer("1 + (2 + 3);")
+
+      val expression = ExpressionParser.parse(consumer)
+
+      expression match {
+        case Operation(_, _, exp2) =>
+          exp2 match {
+            case ParenExpression(expression) =>
+              expression match {
+                case Operation(exp1, operator, exp2) =>
+                  exp1 match {
+                    case LiteralNumber(value) => assert(value.component1() == 2)
+                    case _ => assert(false)
+                  }
+                  assert(operator.component1().equals("+"))
+                  exp2 match {
+                    case LiteralNumber(value) => assert(value.component1() == 3)
+                    case _ => assert(false)
+                  }
+                case _ => assert(false)
+              }
             case _ => assert(false)
           }
         case _ => assert(false)

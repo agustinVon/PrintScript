@@ -15,4 +15,5 @@ case class Operation(exp1: Expression, operator: Content[String], exp2: Expressi
 case class PrintLn(function: Content[String], expression: Expression) extends ASTree
 case class DeclarationAssignation(declaration: Declaration, assignation: Content[String], expression: Expression) extends ASTree
 case class VariableAssignation(variable: Variable, assignation:Content[String], expression: Expression) extends ASTree
+case class ParenExpression(expression: Expression) extends Expression
 

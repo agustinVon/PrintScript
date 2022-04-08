@@ -1,6 +1,6 @@
 package parser
 
-import ast.{ASTree, Declaration, DeclarationAssignation, Expression, LiteralNumber, LiteralString, Operation, PrintLn, Root, Variable, VariableAssignation}
+import ast.{ASTree, Declaration, DeclarationAssignation, Expression, LiteralNumber, LiteralString, Operation, ParenExpression, PrintLn, Root, Variable, VariableAssignation}
 import org.austral.ingsis.printscript.common.{IntRead, Read, StringRead, TokenConsumer}
 import parser.exceptions.ExpressionExpectedException
 import parser.traits.{ExpressionSectionParser, SectionParser}
@@ -51,18 +51,27 @@ object ParserStrategies {
       if (LiteralParser.canBeParsed(consumer)) {
         val literal = LiteralParser.parse(consumer)
         parseOperation(consumer, literal)
-      } else {
+      } else if (VariableParser.canBeParsed(consumer)) {
         val variable = VariableParser.parse(consumer)
         variable match {
           case expression: Expression =>
             parseOperation(consumer, expression)
           case _ => throw ExpressionExpectedException()
         }
+      } else {
+        consumer.consume(TokenTypesImpl.OPENPAREN)
+        if (ExpressionParser.canBeParsed(consumer)) {
+          val expression = ExpressionParser.parse(consumer)
+          consumer.consume(TokenTypesImpl.CLOSEPAREN)
+          ParenExpression(expression)
+        } else {
+          throw ExpressionExpectedException()
+        }
       }
     }
 
     override def canBeParsed(consumer: TokenConsumer): Boolean = {
-      consumer.peekAny(TokenTypesImpl.STRING, TokenTypesImpl.NUMBER, TokenTypesImpl.IDENTIFIER) != null
+      consumer.peekAny(TokenTypesImpl.STRING, TokenTypesImpl.NUMBER, TokenTypesImpl.IDENTIFIER, TokenTypesImpl.OPENPAREN) != null
     }
   }
 
