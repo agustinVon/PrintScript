@@ -57,6 +57,21 @@ case class LexerImpl() extends Lexer {
       case Some(TokenTypesImpl.EOL) => {
         (None, line + 1, matchResult._1.length + position, 0)
       }
+      case Some(TokenTypesImpl.STRING) => {
+        (
+          Some(
+            new Token(
+              TokenTypesImpl.STRING,
+              position+1,
+              position + matchResult._1.length-1,
+              new LexicalRange(column, line, column + matchResult._1.length, line)
+            )
+          ),
+          line,
+          matchResult._1.length + position,
+          matchResult._1.length + column
+        )
+      }
       case Some(x) => {
         (
           Some(

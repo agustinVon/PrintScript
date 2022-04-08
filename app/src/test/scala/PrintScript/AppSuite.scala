@@ -3,11 +3,36 @@
  */
 package PrintScript
 
+import lexer._
+import parser._
+import interpreter._
 import org.junit.jupiter.api.Test
+import scala.jdk.CollectionConverters._
+
+object Tester extends App {
+  //val content = "let txt:string = \"\";" +
+    "let n:number = 2;" +
+    "println(4+(5+6));"
+
+  val content = "let x:number = ((2+3)*5)*2;" +
+    "println(x);"
+
+  val tokens = LexerImpl().lex(StringProgramSource(content))
+  val ast = new ParserImpl().parse(content, tokens.asJava)
+  val interpreter = new InterpreterImpl()
+  interpreter.interpret(ast)
+  /*
+  var variables: Map[String, Option[Any]] = Map()
+  println(variables.get("hola"))
+  println(2 + "holaa")
+
+   */
+
+}
 
 class AppSuite{
   @Test
   def appHasAGreeting(): Unit = {
-    assert(App.greeting() != null)
+
   }
 }
