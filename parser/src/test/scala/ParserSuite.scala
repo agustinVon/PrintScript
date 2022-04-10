@@ -62,7 +62,7 @@ class ParserSuite  {
     val expression = ExpressionParser.parse(consumer)
 
     expression match {
-      case LiteralString(value) => assert(value.component1().equals("\"test\""))
+      case LiteralString(value) => assert(value.component1().equals("test"))
       case _ => assert(false)
     }
   }
@@ -205,7 +205,7 @@ class ParserSuite  {
           assert(declaration.id.component1().equals("a"))
           assert(assignation.component1().equals("="))
           expression match {
-            case LiteralString(value) => assert(value.component1().equals("\"test\""))
+            case LiteralString(value) => assert(value.component1().equals("test"))
             case _ => assert(false)
           }
         case _ => assert(false)
@@ -222,7 +222,7 @@ class ParserSuite  {
         case PrintLn(function, expression) =>
           function.component1().equals("println")
           expression match {
-            case LiteralString(value) => assert(value.component1().equals("\"hello world\""))
+            case LiteralString(value) => assert(value.component1().equals("hello world"))
             case _ => assert(false)
           }
         case _ => assert(false)
@@ -277,7 +277,7 @@ class ParserSuite  {
             assert(declaration.id.component1().equals("a"))
             assert(assignation.component1().equals("="))
             expression match {
-              case LiteralString(value) => assert(value.component1().equals("\"ab\""))
+              case LiteralString(value) => assert(value.component1().equals("ab"))
               case _ => assert(false)
             }
         }
@@ -285,12 +285,31 @@ class ParserSuite  {
           case VariableAssignation(variable, assignation, expression) =>
             assert(variable.value.component1().equals("a"))
             expression match {
-              case LiteralString(value) => assert(value.component1().equals("\"hello world\""))
+              case LiteralString(value) => assert(value.component1().equals("hello world"))
               case _ => assert(false)
             }
           case _ => assert(false)
         }
       case _ => assert(false)
+    }
+
+    @Test
+    def doubleParseExpressionShouldBeParsed(): Unit ={
+      val consumer = getConsumer("((2))")
+
+      val paren = ExpressionParser.parse(consumer)
+
+      paren match {
+        case ParenExpression(expression) =>
+          expression match {
+            case ParenExpression(expression) =>
+              expression match {
+                case LiteralNumber(value) => assert(value.component1() == 2)
+              }
+            case _ => assert(false)
+          }
+        case _ => assert(false)
+      }
     }
   }
 
