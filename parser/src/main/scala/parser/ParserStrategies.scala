@@ -62,8 +62,9 @@ object ParserStrategies {
         consumer.consume(TokenTypesImpl.OPENPAREN)
         if (ExpressionParser.canBeParsed(consumer)) {
           val expression = ExpressionParser.parse(consumer)
+          val result = parseOperation(consumer, expression)
           consumer.consume(TokenTypesImpl.CLOSEPAREN)
-          ParenExpression(expression)
+          ParenExpression(result)
         } else {
           throw ExpressionExpectedException()
         }
