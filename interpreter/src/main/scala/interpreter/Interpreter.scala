@@ -1,4 +1,4 @@
-package PrintScript.interpreter
+package interpreter
 
 import ast.ASTree
 

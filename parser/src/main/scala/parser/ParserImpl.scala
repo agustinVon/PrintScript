@@ -8,13 +8,13 @@ import org.austral.ingsis.printscript.common.TokenConsumer
 import parser.ParserStrategies.{DeclarationParser, FunctionParser, LiteralParser, VariableParser}
 import parser.exceptions.NoStrategyException
 import parser.traits.{Parser, SectionParser}
+import sources.ProgramSource
+import scala.jdk.CollectionConverters._
 
-import scala.annotation.tailrec
-
-class ParserImpl extends Parser {
+case class ParserImpl() extends Parser {
   private val strategies: List[SectionParser] = List(DeclarationParser, LiteralParser, VariableParser, FunctionParser)
-  override def parse(content:String, list: java.util.List[Token]): ASTree = {
-    val tokenIterator = TokenIterator.create(content, list)
+  override def parse(content:ProgramSource, list: List[Token]): ASTree = {
+    val tokenIterator = TokenIterator.create(content.getSourceString, list.asJava)
     val tokenConsumer = TokenConsumerImpl(tokenIterator)
     buildTree(Root(List()), tokenConsumer)
   }

@@ -3,7 +3,6 @@ plugins {
     id 'application'
     id 'printScript.common'
     id 'cz.alenkacz.gradle.scalafmt' version '1.16.2'
-
 }
 
 dependencies {

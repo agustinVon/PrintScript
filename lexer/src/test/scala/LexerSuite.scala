@@ -1,6 +1,7 @@
 import lexer._
 import org.austral.ingsis.printscript.common.Token
 import org.junit.jupiter.api.Test
+import sources.StringProgramSource
 import tokens.TokenTypesImpl
 
 class LexerSuite {

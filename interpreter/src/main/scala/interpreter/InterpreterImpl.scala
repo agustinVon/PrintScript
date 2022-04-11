@@ -1,12 +1,11 @@
-package PrintScript.interpreter
+package interpreter
 
-
-import PrintScript.interpreter.ExpressionResultType.{ExpressionResult, NUM, STR}
+import interpreter.ExpressionResultType.{ExpressionResult, NUM, STR}
 import ast.{ASTree, Declaration, DeclarationAssignation, Expression, LiteralNumber, LiteralString, Operation, ParenExpression, PrintLn, Root, Variable, VariableAssignation}
 import exceptions.{InvalidOperationException, TypeMismatchException, VariableAlreadyDeclaredException, VariableNotDeclaredException}
 import org.austral.ingsis.printscript.parser.Content
 
-class InterpreterImpl extends Interpreter {
+case class InterpreterImpl() extends Interpreter {
   var variableTypes: Map[String, ExpressionResult] = Map()
   var variableValues: Map[String, Option[Any]] = Map()
   var validationMode: Boolean = false

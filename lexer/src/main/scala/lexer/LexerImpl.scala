@@ -2,12 +2,13 @@ package lexer
 
 import tokens.TokenTypesImpl
 import org.austral.ingsis.printscript.common.{LexicalRange, Token, TokenType}
+import sources.ProgramSource
 
 import java.util.regex.{MatchResult, Matcher}
 
 case class LexerImpl() extends Lexer {
 
-  type MatchResult           = (String, Option[TokenType])
+  type MatchResult = (String, Option[TokenType])
   type TokenGenerationResult = (Option[Token], Int, Int, Int)
   val matchers: List[(TokenType, LexerMatcher)] = Matches().getMatches
 

@@ -1,11 +1,12 @@
 import ast.{Declaration, DeclarationAssignation, Expression, LiteralNumber, LiteralString, Operation, ParenExpression, PrintLn, Root, Variable, VariableAssignation}
-import lexer.{LexerImpl, StringProgramSource}
+import lexer.LexerImpl
 import org.austral.ingsis.printscript.parser.TokenIterator
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.{DisplayName, Nested, Test}
 import parser.ParserStrategies.{DeclarationParser, ExpressionParser, FunctionParser, LiteralParser, VariableParser}
 import parser.exceptions.{ExpressionExpectedException, NoStrategyException}
 import parser.{ParserImpl, TokenConsumerImpl}
+import sources.StringProgramSource
 
 import scala.jdk.CollectionConverters._
 
@@ -289,7 +290,7 @@ class ParserSuite  {
     val tokens = lexer.lex(StringProgramSource(content))
     val parser = new ParserImpl()
 
-    val ast = parser.parse(content, tokens.asJava)
+    val ast = parser.parse(StringProgramSource(content), tokens)
 
     ast match {
       case Root(sentences) =>
@@ -342,7 +343,7 @@ class ParserSuite  {
     val lexer = LexerImpl()
     val tokens = lexer.lex(StringProgramSource(content))
     val parser = new ParserImpl()
-    assertThrows(classOf[NoStrategyException], () => parser.parse(content, tokens.asJava))
+    assertThrows(classOf[NoStrategyException], () => parser.parse(StringProgramSource(content), tokens))
   }
 
   @Test

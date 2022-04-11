@@ -1,4 +1,4 @@
-package PrintScript.interpreter
+package interpreter
 
 object ExpressionResultType extends Enumeration {
   type ExpressionResult = Value
