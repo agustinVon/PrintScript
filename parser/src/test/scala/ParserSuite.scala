@@ -56,6 +56,29 @@ class ParserSuite  {
   }
 
   @Test
+  def multipleParenExpressionShouldBeParsed():Unit = {
+    val consumer = getConsumer("((5 + 2) * 4)")
+
+    val expression = ExpressionParser.parse(consumer)
+
+    expression match {
+      case ParenExpression(expression) =>
+        expression match {
+          case Operation(exp1, operator, exp2) =>
+            assert(operator.component1().equals("*"))
+            exp1 match {
+              case ParenExpression(expression) => {
+                expression match {
+                  case Operation(exp1, operator, exp2) =>
+                    assert(operator.component1().equals("+"))
+                }
+              }
+            }
+        }
+    }
+  }
+
+  @Test
   def expressionParserShouldParseLiterals(): Unit = {
     val consumer = getConsumer("\"test\"")
 
