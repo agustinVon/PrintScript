@@ -19,7 +19,7 @@ jobs:
         uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
         env:
           CI: true
-          username: ${{ secrets.USERNAME }}
-          token: ${{ secrets.PASS }}
+          USERNAME: ${{ secrets.USERNAME }}
+          TOKEN: ${{ secrets.TOKEN }}
         with:
           arguments: build
