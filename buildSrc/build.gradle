@@ -15,7 +15,3 @@ dependencies {
     // https://mvnrepository.com/artifact/org.scoverage/gradle-scoverage
     implementation 'org.scoverage:gradle-scoverage:7.0.0'
 }
-
-
-
-

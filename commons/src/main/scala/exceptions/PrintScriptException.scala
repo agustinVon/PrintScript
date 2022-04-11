@@ -1,0 +1,2 @@
+package exceptions
+class PrintScriptException extends Exception

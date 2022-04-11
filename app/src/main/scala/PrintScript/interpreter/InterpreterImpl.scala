@@ -1,90 +1,189 @@
 package PrintScript.interpreter
-import ast._
-import org.austral.ingsis.printscript.common.Token
+
+
+import PrintScript.interpreter.ExpressionResultType.{ExpressionResult, NUM, STR}
+import ast.{ASTree, Declaration, DeclarationAssignation, Expression, LiteralNumber, LiteralString, Operation, ParenExpression, PrintLn, Root, Variable, VariableAssignation}
+import exceptions.{InvalidOperationException, TypeMismatchException, VariableAlreadyDeclaredException, VariableNotDeclaredException}
 import org.austral.ingsis.printscript.parser.Content
 
 class InterpreterImpl extends Interpreter {
-  var variables: Map[String, Option[Any]] = Map()
+  var variableTypes: Map[String, ExpressionResult] = Map()
+  var variableValues: Map[String, Option[Any]] = Map()
+  var validationMode: Boolean = false
 
   override def interpret(ast: ASTree): Unit = {
-    interpret2(ast)
+    validationMode = false
+    variableValues = Map()
+    solveAST(ast)
   }
 
-  private def interpret2(ast:ASTree):Option[Any] = {
+  override def validate(ast:ASTree): Unit = {
+    validationMode = true
+    variableTypes = Map()
+    solveAST(ast)
+    println("Validation successful")
+  }
+
+  override def getMemory():Map[String, Option[Any]] = {
+    variableValues
+  }
+
+  def solveAST(ast:ASTree):Unit = {
     ast match {
-      case Root(sentences) =>
-        sentences.foreach(t=>interpret2(t))
-        None
-      case DeclarationAssignation(declaration, assignation, expression) =>
-        val declarationID = declaration.id.component1()
-        if (variables.contains(declarationID)){
-          error("variable "+declarationID+" already defined", assignation.getToken)
-        }else{
-          variables = variables + (declaration.id.component1() -> interpret2(expression))
-          None
-        }
-
-
-      case x: Expression => getExpressionValue(x)
-      case Operation(exp1, operator, exp2) =>getOperationValue(exp1, operator, exp2)
-      case PrintLn(function, expression) =>
-        println(getExpressionValue(expression).get)
-        None
-      case VariableAssignation(variable, assignation, expression) =>
-        if (variables.contains(variable.value.component1())){
-          val v = interpret2(expression)
-          variables = variables + (variable.value.component1() -> v)
-          v
-        }else{
-          error("variable '"+ variable.value.component1()+"' not declared.", variable.value.getToken)
-        }
+      case x: Expression => solveExpression(x)
+      case VariableAssignation(variable, _, expression) => solveVariableAssignation(variable, expression)
+      case DeclarationAssignation(declaration, _, expression) => solveDeclarationAssignation(declaration, expression)
+      case Root(sentences) => sentences.foreach(t=>solveAST(t))
+      case PrintLn(_, expression) => solvePrintLn(expression)
     }
   }
 
-  private def getExpressionValue(expression: Expression):Option[Any] = {
+  private def solvePrintLn(expression: Expression): Unit = {
+    solveExpression(expression) match {
+      case Left(_) =>
+      case Right(x) => println(x.get)
+    }
+  }
+
+  private def solveDeclarationAssignation(declaration: Declaration,expression: Expression): Unit = {
+    val line = declaration.declaration.getToken.component4().getStartLine
+    val column = declaration.declaration.getToken.component4().getStartCol
+
+    if ((validationMode && variableTypes.contains(declaration.id.getContent)) || variableValues.contains(declaration.id.getContent)) {
+      throw VariableAlreadyDeclaredException(line, column)
+    }else{
+      val expressionResult = solveExpression(expression)
+      checkTypes(expressionResult, declaration.declType.getContent, line, column)
+      storeValue(declaration.id.getContent, expressionResult)
+    }
+  }
+
+  private def solveVariableAssignation(variable: Variable, expression: Expression) = {
+    val line = variable.value.getToken.component4().getStartLine
+    val column = variable.value.getToken.component4().getStartCol
+    if ((validationMode && !variableTypes.contains(variable.value.getContent)) || !variableValues.contains(variable.value.getContent)) {
+      throw VariableNotDeclaredException(line, column)
+    }else{
+      val expressionResult = solveExpression(expression)
+      if (validationMode){
+        variableTypes(variable.value.getContent) match {
+          case NUM => checkTypes(expressionResult, "number", line, column)
+          case STR => checkTypes(expressionResult, "string", line, column)
+        }
+      }else{
+        variableValues(variable.value.getContent).get match {
+          case _:Int => checkTypes(expressionResult, "number", line, column)
+          case _:String => checkTypes(expressionResult, "string", line, column)
+        }
+      }
+      storeValue(variable.value.getContent,expressionResult)
+    }
+  }
+
+  private def checkTypes(expressionResult:Either[ExpressionResult, Option[Any]], expectedType:String, line: Int, column: Int): Unit = {
+    (expressionResult, expectedType) match {
+      case (Left(NUM), "string") => throw TypeMismatchException(line, column)
+      case (Left(STR), "number") => throw TypeMismatchException(line, column)
+      case (Right(x), y) =>
+        (x.get, y) match {
+          case (_: Int, "string") => throw TypeMismatchException(line, column)
+          case (_: String, "number") => throw TypeMismatchException(line, column)
+          case _ =>
+        }
+      case _ =>
+    }
+  }
+
+  private def storeValue(variableID:String, expressionResult: Either[ExpressionResult, Option[Any]]) = {
+    expressionResult match {
+      case Left(x) =>
+        variableTypes = variableTypes + (variableID -> x)
+      case Right(x) =>
+        variableValues = variableValues + (variableID -> x)
+    }
+  }
+
+  private def solveExpression(expression: Expression):Either[ExpressionResult, Option[Any]] = {
     expression match {
-      case LiteralNumber(value) => Some(value.component1())
-      case LiteralString(value) => Some(value.component1())
-      case Variable(value) => variables.getOrElse(value.component1(), error("variable '"+ value.component1()+"' not declared.", value.getToken))
-      case Operation(exp1, operator, exp2) => getOperationValue(exp1, operator, exp2)
-      case ParenExpression(expression) => getExpressionValue(expression)
+      case Operation(exp1, operator, exp2) => solveOperation(exp1, operator, exp2)
+      case ParenExpression(expression) => solveExpression(expression)
+      case Variable(value) => solveVariable(value)
+      case LiteralNumber(value) => solveLiteralNumber(value)
+      case LiteralString(value) => solveLiteralString(value)
     }
   }
 
-  private def getOperationValue(exp1: Expression, operation: Content[String], exp2:Expression):Option[Any] = {
-    val v1 = getExpressionValue(exp1)
-    val v2 = getExpressionValue(exp2)
-    operation.component1() match {
-      case "+" => (v1.get, v2.get) match {
-        case (x1:Int, x2:Int) => Some(x1 + x2)
-        case (x1:Int, x2:String) => Some(x1 + x2)
-        case (x1:String, x2:Int) => Some(x1 + x2)
-        case (x1:String, x2:String) => Some(x1 + x2)
-      }
-      case "-" => (v1.get,v2.get) match {
-        case (x1:Int, x2:Int) => Some(x1 - x2)
-        case (_:Int, _:String) => error("cannot substract a String from an Int", operation.getToken)
-        case (_:String, _:Int) => error("cannot substract an Int from a String", operation.getToken)
-        case (_:String, _:String) => error("cannot substract two Strings", operation.getToken)
-      }
-      case "*" => (v1.get,v2.get) match {
-        case (x1:Int, x2:Int) => Some(x1 * x2)
-        case (_:Int, _:String) => error("cannot multiply a String with an Int", operation.getToken)
-        case (_:String, _:Int) => error("cannot multiply an Int with a String", operation.getToken)
-        case (_:String, _:String) => error("cannot multiply two Strings", operation.getToken)
-      }
-      case "/" => (v1.get,v2.get) match {
-        case (x1:Int, x2:Int) => Some(x1 / x2)
-        case (_:Int, _:String) => error("cannot divide a String with an Int", operation.getToken)
-        case (_:String, _:Int) => error("cannot divide an Int with a String", operation.getToken)
-        case (_:String, _:String) => error("cannot divide two Strings", operation.getToken)
-      }
+  private def solveVariable(value:Content[String]) = {
+    if(validationMode){
+      Left(variableTypes.getOrElse(value.getContent,throw VariableNotDeclaredException(value.getToken.component4().getStartLine, value.getToken.component4().getStartCol)))
+    }else{
+      Right(variableValues.getOrElse(value.getContent,throw VariableNotDeclaredException(value.getToken.component4().getStartLine, value.getToken.component4().getStartCol)))
     }
-
   }
 
-  private def error(msg:String, token:Token) = {
-    println(msg)
-    None
+  private def solveLiteralNumber(value:Content[Int]) = {
+    if(validationMode){
+      Left(NUM)
+    }else{
+      Right(Some(value.getContent))
+    }
+  }
+
+  private def solveLiteralString(value:Content[String]) = {
+    if(validationMode){
+      Left(STR)
+    }else{
+      Right(Some(value.getContent))
+    }
+  }
+
+  private def solveOperation(exp1: Expression, operator: Content[String], exp2: Expression):Either[ExpressionResult, Option[Any]] = {
+    val t1 = solveExpression(exp1)
+    val t2 = solveExpression(exp2)
+    val line = operator.getToken.component4().getStartLine
+    val column = operator.getToken.component4().getStartCol
+
+    operator.component1() match {
+      case "+" => (t1, t2) match {
+        case (Left(NUM), Left(NUM)) => Left(NUM)
+        case (Left(NUM), Left(STR)) => Left(STR)
+        case (Left(STR), Left(NUM)) => Left(STR)
+        case (Left(STR), Left(STR)) => Left(STR)
+        case (Right(Some(x:Int)), Right(Some(y:Int))) => Right(Some(x+y))
+        case (Right(Some(x:Int)), Right(Some(y:String))) => Right(Some(x+y))
+        case (Right(Some(x:String)), Right(Some(y:Int))) => Right(Some(x+y))
+        case (Right(Some(x:String)), Right(Some(y:String))) => Right(Some(x+y))
+      }
+      case "-" => (t1,t2) match {
+        case (Left(NUM), Left(NUM)) => Left(NUM)
+        case (Left(NUM), Left(STR)) => throw InvalidOperationException(line,column, "cannot substract a string with a number" )
+        case (Left(STR), Left(NUM)) => throw InvalidOperationException(line,column, "cannot substract a string with a number" )
+        case (Left(STR), Left(STR)) => throw InvalidOperationException(line,column, "cannot substract two strings" )
+        case (Right(Some(x:Int)), Right(Some(y:Int))) => Right(Some(x-y))
+        case (Right(Some(_:Int)), Right(Some(_:String))) => throw InvalidOperationException(line,column, "cannot substract a string with a number" )
+        case (Right(Some(_:String)), Right(Some(_:Int))) => throw InvalidOperationException(line,column, "cannot substract a string with a number" )
+        case (Right(Some(_:String)), Right(Some(_:String))) => throw InvalidOperationException(line,column, "cannot substract two strings" )
+      }
+      case "*" => (t1,t2) match {
+        case (Left(NUM), Left(NUM)) => Left(NUM)
+        case (Left(NUM), Left(STR)) => throw InvalidOperationException(line,column, "cannot multiply a string with a number" )
+        case (Left(STR), Left(NUM)) => throw InvalidOperationException(line,column, "cannot multiply a string with a number" )
+        case (Left(STR), Left(STR)) => throw InvalidOperationException(line,column, "cannot multiply two strings" )
+        case (Right(Some(x:Int)), Right(Some(y:Int))) => Right(Some(x*y))
+        case (Right(Some(_:Int)), Right(Some(_:String))) => throw InvalidOperationException(line,column, "cannot multiply a string with a number" )
+        case (Right(Some(_:String)), Right(Some(_:Int))) => throw InvalidOperationException(line,column, "cannot multiply a string with a number" )
+        case (Right(Some(_:String)), Right(Some(_:String))) => throw InvalidOperationException(line,column, "cannot multiply two strings" )
+      }
+      case "/" => (t1,t2) match {
+        case (Left(NUM), Left(NUM)) => Left(NUM)
+        case (Left(NUM), Left(STR)) => throw InvalidOperationException(line,column, "cannot divide a string with a number" )
+        case (Left(STR), Left(NUM)) => throw InvalidOperationException(line,column, "cannot divide a string with a number" )
+        case (Left(STR), Left(STR)) => throw InvalidOperationException(line,column, "cannot divide two strings" )
+        case (Right(Some(x:Int)), Right(Some(y:Int))) => Right(Some(x/y))
+        case (Right(Some(_:Int)), Right(Some(_:String))) => throw InvalidOperationException(line,column, "cannot divide a string with a number" )
+        case (Right(Some(_:String)), Right(Some(_:Int))) => throw InvalidOperationException(line,column, "cannot divide a string with a number" )
+        case (Right(Some(_:String)), Right(Some(_:String))) => throw InvalidOperationException(line,column, "cannot divide two strings" )
+      }
+    }
   }
 }
