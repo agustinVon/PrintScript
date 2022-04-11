@@ -5,6 +5,7 @@ package PrintScript
 import interpreter.InterpreterImpl
 import lexer.LexerImpl
 import parser.ParserImpl
+import parser.exceptions.{ExpectedEndOfLineException, ExpressionExpectedException}
 import sources.StringProgramSource
 
 import scala.annotation.tailrec
@@ -24,8 +25,17 @@ object App {
 
     if (option == 1) {
       val tokens = lexer.lex(source)
-      val ast = parser.parse(source, tokens)
-      interpreter.interpret(ast)
+      try{
+        val ast = parser.parse(source, tokens)
+        interpreter.interpret(ast)
+      } catch {
+        case e:ExpectedEndOfLineException =>
+          println("ERROR\ncolumn: " + e.position + " line: " + e.line)
+          println(e.getMessage)
+        case e:ExpressionExpectedException =>
+          println("ERROR\ncolumn: " + e.position + " line: " + e.line)
+          println(e.getMessage)
+      }
     }
 
     if(option == 2) {

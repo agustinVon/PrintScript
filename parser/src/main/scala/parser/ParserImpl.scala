@@ -2,13 +2,13 @@ package parser
 
 import ast.{ASTree, Root}
 import tokens.TokenTypesImpl
-import org.austral.ingsis.printscript.common.Token
+import org.austral.ingsis.printscript.common.{Token, TokenConsumeException, TokenConsumer}
 import org.austral.ingsis.printscript.parser.TokenIterator
-import org.austral.ingsis.printscript.common.TokenConsumer
 import parser.ParserStrategies.{DeclarationParser, FunctionParser, LiteralParser, VariableParser}
-import parser.exceptions.NoStrategyException
+import parser.exceptions.{ExpectedEndOfLineException, NoStrategyException}
 import parser.traits.{Parser, SectionParser}
 import sources.ProgramSource
+
 import scala.jdk.CollectionConverters._
 
 case class ParserImpl() extends Parser {
@@ -30,7 +30,11 @@ case class ParserImpl() extends Parser {
   private final def sentenceParse(consumer: TokenConsumer): ASTree = {
     val strategy = strategies.find(strategy => strategy.canBeParsed(consumer)).getOrElse(throw NoStrategyException())
     val resultTree = strategy.parse(consumer)
-    consumer.consumeAny(TokenTypesImpl.EOL, TokenTypesImpl.SEMICOLON)
+    try {
+      consumer.consumeAny(TokenTypesImpl.EOL, TokenTypesImpl.SEMICOLON)
+    } catch {
+      case e:TokenConsumeException => throw ExpectedEndOfLineException(e.getMessage, consumer.current().component4().getStartLine, consumer.current().component4().getStartCol)
+    }
     resultTree
   }
 }

@@ -21,7 +21,7 @@ object ParserStrategies {
           val expression = ExpressionParser.parse(consumer)
           DeclarationAssignation(declaration, assignment, expression)
         } else {
-          throw ExpressionExpectedException()
+          throw ExpressionExpectedException(consumer.current().component4().getStartLine, consumer.current().component4().getStartCol)
         }
       } else {
         declaration
@@ -39,7 +39,7 @@ object ParserStrategies {
       if (ExpressionParser.canBeParsed(consumer)) {
         Operation(expression, operator, ExpressionParser.parse(consumer))
       } else {
-        throw ExpressionExpectedException()
+        throw ExpressionExpectedException(consumer.current().component4().getStartLine, consumer.current().component4().getStartCol)
       }
     } else {
       expression
@@ -56,7 +56,7 @@ object ParserStrategies {
         variable match {
           case expression: Expression =>
             parseOperation(consumer, expression)
-          case _ => throw ExpressionExpectedException()
+          case _ => throw ExpressionExpectedException(consumer.current().component4().getStartLine, consumer.current().component4().getStartCol)
         }
       } else {
         consumer.consume(TokenTypesImpl.OPENPAREN)
@@ -66,7 +66,7 @@ object ParserStrategies {
           consumer.consume(TokenTypesImpl.CLOSEPAREN)
           ParenExpression(result)
         } else {
-          throw ExpressionExpectedException()
+          throw ExpressionExpectedException(consumer.current().component4().getStartLine, consumer.current().component4().getStartCol)
         }
       }
     }
@@ -118,7 +118,7 @@ object ParserStrategies {
         consumer.consume(TokenTypesImpl.CLOSEPAREN)
         PrintLn(function, expression)
       } else {
-        throw ExpressionExpectedException()
+        throw ExpressionExpectedException(consumer.current().component4().getStartLine, consumer.current().component4().getStartCol)
       }
     }
 
