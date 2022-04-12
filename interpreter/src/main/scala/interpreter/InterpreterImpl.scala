@@ -110,7 +110,7 @@ case class InterpreterImpl() extends Interpreter {
     }
   }
 
-  private def solveLiteralNumber(value:Content[Int]):InterpreterResult = {
+  private def solveLiteralNumber(value:Content[Double]):InterpreterResult = {
     if(validationPhase){
       Left(NUM)
     }else{

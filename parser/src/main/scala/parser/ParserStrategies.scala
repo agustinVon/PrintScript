@@ -77,10 +77,13 @@ object ParserStrategies {
   }
 
   case object LiteralParser extends ExpressionSectionParser() {
-    object MyIntRead extends Read[Int] {
-      override def default(): Int = IntRead.INSTANCE.default()
-
-      override def read(s: String, i: Int, i1: Int): Int = IntRead.INSTANCE.read(s, i, i1)
+    object MyIntRead extends Read[Double] {
+      override def read(content: String, from: Int, to: Int): Double = {
+        return StringRead.INSTANCE.read(content, from, to).toDouble
+      }
+      override def default(): Double = {
+        0
+      }
     }
 
     override def parse(consumer: TokenConsumer): Expression = {
@@ -88,6 +91,7 @@ object ParserStrategies {
         LiteralString(consumer.consume(TokenTypesImpl.STRING))
       } else {
         LiteralNumber(consumer.consume(TokenTypesImpl.NUMBER, MyIntRead))
+
       }
     }
 
