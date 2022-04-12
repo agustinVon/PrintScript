@@ -11,3 +11,5 @@ dependencies {
     implementation project(':interpreter')
     implementation project(':commons')
 }
+
+version '1.0.0'

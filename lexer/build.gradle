@@ -9,4 +9,6 @@ dependencies {
     implementation project(':commons')
 }
 
+version '1.0.0'
+
 build.dependsOn(checkScoverage)

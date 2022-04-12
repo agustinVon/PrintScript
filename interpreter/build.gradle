@@ -11,4 +11,6 @@ dependencies {
     implementation project(':parser')
 }
 
+version '1.0.0'
+
 build.dependsOn(checkScoverage)
