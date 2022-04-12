@@ -1,3 +1,3 @@
 package exceptions
 
-case class TypeMismatchException(line: Int, Column :Int) extends  PrintScriptException
+case class TypeMismatchException(line: Int, Column: Int) extends PrintScriptException
