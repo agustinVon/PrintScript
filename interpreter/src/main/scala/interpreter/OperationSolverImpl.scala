@@ -23,8 +23,13 @@ case class OperationSolverImpl() extends OperationSolver{
       case (Left(NUM), Left(STR)) => Left(STR)
       case (Left(STR), Left(NUM)) => Left(STR)
       case (Left(STR), Left(STR)) => Left(STR)
+      case (Right(Some(x: Double)), Right(Some(y: Double))) => Right(Some(x + y))
       case (Right(Some(x: Int)), Right(Some(y: Int))) => Right(Some(x + y))
+      case (Right(Some(x: Double)), Right(Some(y: Int))) => Right(Some(x + y))
+      case (Right(Some(x: Int)), Right(Some(y: Double))) => Right(Some(x + y))
+      case (Right(Some(x: Double)), Right(Some(y: String))) => Right(Some(x + y))
       case (Right(Some(x: Int)), Right(Some(y: String))) => Right(Some(x + y))
+      case (Right(Some(x: String)), Right(Some(y: Double))) => Right(Some(x + y))
       case (Right(Some(x: String)), Right(Some(y: Int))) => Right(Some(x + y))
       case (Right(Some(x: String)), Right(Some(y: String))) => Right(Some(x + y))
     }
@@ -36,7 +41,10 @@ case class OperationSolverImpl() extends OperationSolver{
       case (Left(NUM), Left(STR)) => throw InvalidOperationException(line, column, "cannot substract a string with a number")
       case (Left(STR), Left(NUM)) => throw InvalidOperationException(line, column, "cannot substract a string with a number")
       case (Left(STR), Left(STR)) => throw InvalidOperationException(line, column, "cannot substract two strings")
+      case (Right(Some(x: Double)), Right(Some(y: Double))) => Right(Some(x - y))
       case (Right(Some(x: Int)), Right(Some(y: Int))) => Right(Some(x - y))
+      case (Right(Some(x: Double)), Right(Some(y: Int))) => Right(Some(x - y))
+      case (Right(Some(x: Int)), Right(Some(y: Double))) => Right(Some(x - y))
     }
   }
 
@@ -46,7 +54,10 @@ case class OperationSolverImpl() extends OperationSolver{
       case (Left(NUM), Left(STR)) => throw InvalidOperationException(line, column, "cannot multiply a string with a number")
       case (Left(STR), Left(NUM)) => throw InvalidOperationException(line, column, "cannot multiply a string with a number")
       case (Left(STR), Left(STR)) => throw InvalidOperationException(line, column, "cannot multiply two strings")
+      case (Right(Some(x: Double)), Right(Some(y: Double))) => Right(Some(x * y))
       case (Right(Some(x: Int)), Right(Some(y: Int))) => Right(Some(x * y))
+      case (Right(Some(x: Double)), Right(Some(y: Int))) => Right(Some(x * y))
+      case (Right(Some(x: Int)), Right(Some(y: Double))) => Right(Some(x * y))
     }
   }
 
@@ -56,7 +67,10 @@ case class OperationSolverImpl() extends OperationSolver{
       case (Left(NUM), Left(STR)) => throw InvalidOperationException(line, column, "cannot divide a string with a number")
       case (Left(STR), Left(NUM)) => throw InvalidOperationException(line, column, "cannot divide a string with a number")
       case (Left(STR), Left(STR)) => throw InvalidOperationException(line, column, "cannot divide two strings")
+      case (Right(Some(x: Double)), Right(Some(y: Double))) => Right(Some(x / y))
       case (Right(Some(x: Int)), Right(Some(y: Int))) => Right(Some(x / y))
+      case (Right(Some(x: Double)), Right(Some(y: Int))) => Right(Some(x / y))
+      case (Right(Some(x: Int)), Right(Some(y: Double))) => Right(Some(x / y))
     }
   }
 }

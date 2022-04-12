@@ -42,6 +42,13 @@ class ParserSuite  {
     }
 
     @Test
+    def literalDoubleShouldBeAbleToParse():Unit = {
+      val consumer = getConsumer("2.5")
+
+      assert(LiteralParser.canBeParsed(consumer))
+    }
+
+    @Test
     def functionParserShouldBeAbleToParse():Unit = {
       val consumer = getConsumer("println(\"test\");")
 
@@ -87,6 +94,18 @@ class ParserSuite  {
 
     expression match {
       case LiteralString(value) => assert(value.component1().equals("test"))
+      case _ => assert(false)
+    }
+  }
+
+  @Test
+  def expressionParserShouldParseLiteralDoubles():Unit = {
+    val consumer = getConsumer("2.5")
+
+    val expression = ExpressionParser.parse(consumer)
+
+    expression match {
+      case LiteralNumber(value) => assert(value.component1().equals(2.5))
       case _ => assert(false)
     }
   }
