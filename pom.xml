@@ -1,7 +1,0 @@
-<distributionManagement>
-    <repository>
-        <id>github</id>
-        <name>GitHub agustinVon Apache Maven Packages</name>
-        <url>https://maven.pkg.github.com/agustinVon/PrintScript</url>
-    </repository>
-</distributionManagement>

@@ -1,20 +1,30 @@
 plugins {
-    // Apply the scala Plugin to add support for Scala.
     id 'scala'
-
-    // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
     id "org.scoverage"
+    id 'maven-publish'
 }
 
 repositories {
-    // Use Maven Central for resolving dependencies.
     mavenCentral()
     maven {
         url = uri("https://maven.pkg.github.com/austral-ingsis/printscript-parser-common")
         credentials {
             username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
             password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+        }
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/agustinVon/PrintScript"
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
         }
     }
 }
