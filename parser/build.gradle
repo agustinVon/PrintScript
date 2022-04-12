@@ -10,6 +10,6 @@ dependencies {
     implementation project(':lexer')
 }
 
-version '1.0.1'
+version '1.0.2'
 
 build.dependsOn(checkScoverage)

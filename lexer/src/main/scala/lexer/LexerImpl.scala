@@ -8,7 +8,7 @@ import java.util.regex.{MatchResult, Matcher}
 
 case class LexerImpl() extends Lexer {
 
-  type MatchResult = (String, Option[TokenType])
+  type MatchResult           = (String, Option[TokenType])
   type TokenGenerationResult = (Option[Token], Int, Int, Int)
   val matchers: List[(TokenType, LexerMatcher)] = Matches().getMatches
 
@@ -63,8 +63,8 @@ case class LexerImpl() extends Lexer {
           Some(
             new Token(
               TokenTypesImpl.STRING,
-              position+1,
-              position + matchResult._1.length-1,
+              position + 1,
+              position + matchResult._1.length - 1,
               new LexicalRange(column, line, column + matchResult._1.length, line)
             )
           ),

@@ -6,46 +6,53 @@ import interpreter.InterpreterImpl
 import lexer.LexerImpl
 import parser.ParserImpl
 import parser.exceptions.{ExpectedEndOfLineException, ExpressionExpectedException}
-import sources.StringProgramSource
+import sources.{FileProgramSource, StringProgramSource}
 
 import scala.annotation.tailrec
 import scala.io.{BufferedSource, Source}
 import scala.util.{Failure, Success, Using}
 
 object App {
+  private val lexer       = LexerImpl()
+  private val parser      = ParserImpl()
+  private val interpreter = InterpreterImpl()
+
   def main(args: Array[String]): Unit = {
     displayIntro(println)
-    val content: String = displayPathOption(println)
-    val source = StringProgramSource(content)
-    val option:Int = displayMenu(println)
-
-    val lexer = LexerImpl()
-    val parser = ParserImpl()
-    val interpreter = InterpreterImpl()
+    val path: String = displayPathOption(println)
+    val option: Int  = displayMenu(println)
 
     if (option == 1) {
-      val tokens = lexer.lex(source)
-      try{
-        val ast = parser.parse(source, tokens)
-        interpreter.interpret(ast)
+      try {
+        interpret(FileProgramSource(path), println)
       } catch {
-        case e:ExpectedEndOfLineException =>
+        case e: ExpectedEndOfLineException =>
           println("ERROR\ncolumn: " + e.position + " line: " + e.line)
           println(e.getMessage)
-        case e:ExpressionExpectedException =>
+        case e: ExpressionExpectedException =>
           println("ERROR\ncolumn: " + e.position + " line: " + e.line)
           println(e.getMessage)
       }
     }
 
-    if(option == 2) {
-      val tokens = lexer.lex(source)
-      val ast = parser.parse(source, tokens)
-      interpreter.validate(ast)
+    if (option == 2) {
+      validate(FileProgramSource(path), println)
     }
   }
 
-  def displayIntro(displayMethod:(String) => Unit): Unit = {
+  def interpret(source: FileProgramSource, displayMethod: (String) => Unit): Unit = {
+    val tokens = lexer.lex(source)
+    val ast    = parser.parse(source, tokens)
+    interpreter.interpret(ast, displayMethod)
+  }
+
+  def validate(source: FileProgramSource, displayMethod: (String) => Unit): Unit = {
+    val tokens = lexer.lex(source)
+    val ast    = parser.parse(source, tokens)
+    interpreter.validate(ast, displayMethod)
+  }
+
+  def displayIntro(displayMethod: (String) => Unit): Unit = {
     displayMethod(" _____      _       _    _____           _       _   ")
     displayMethod("|  __ \\    (_)     | |  / ____|         (_)     | |  ")
     displayMethod("| |__) | __ _ _ __ | |_| (___   ___ _ __ _ _ __ | |_ ")
@@ -60,21 +67,13 @@ object App {
     displayMethod("")
   }
 
-  @tailrec
-  def displayPathOption(displayMethod:(String) => Unit):String = {
+  def displayPathOption(displayMethod: (String) => Unit): String = {
     displayMethod("Path to file: ")
     displayMethod("")
-    val path = scala.io.StdIn.readLine()
-    Using(Source.fromFile(path)) { source => source.mkString } match {
-      case Failure(exception) => {
-        println(exception)
-        displayPathOption(displayMethod)
-      }
-      case Success(value) => value
-    }
+    scala.io.StdIn.readLine()
   }
 
-  def displayMenu(displayMethod:(String) => Unit): Int = {
+  def displayMenu(displayMethod: (String) => Unit): Int = {
     displayMethod("1. Interpret")
     displayMethod("2. Validate")
     displayMethod("")

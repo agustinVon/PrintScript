@@ -1,6 +1,19 @@
 package parser
 
-import ast.{ASTree, Declaration, DeclarationAssignation, Expression, LiteralNumber, LiteralString, Operation, ParenExpression, PrintLn, Root, Variable, VariableAssignation}
+import ast.{
+  ASTree,
+  Declaration,
+  DeclarationAssignation,
+  Expression,
+  LiteralNumber,
+  LiteralString,
+  Operation,
+  ParenExpression,
+  PrintLn,
+  Root,
+  Variable,
+  VariableAssignation
+}
 import org.austral.ingsis.printscript.common.{IntRead, Read, StringRead, TokenConsumer}
 import parser.exceptions.ExpressionExpectedException
 import parser.traits.{ExpressionSectionParser, SectionParser}
@@ -10,10 +23,10 @@ object ParserStrategies {
 
   case object DeclarationParser extends SectionParser() {
     override def parse(consumer: TokenConsumer): ASTree = {
-      val let = consumer.consume(TokenTypesImpl.LET)
+      val let        = consumer.consume(TokenTypesImpl.LET)
       val identifier = consumer.consume(TokenTypesImpl.IDENTIFIER)
       consumer.consume(TokenTypesImpl.COLON)
-      val valType = consumer.consumeAny(TokenTypesImpl.TYPESTRING, TokenTypesImpl.TYPENUMBER)
+      val valType     = consumer.consumeAny(TokenTypesImpl.TYPESTRING, TokenTypesImpl.TYPENUMBER)
       val declaration = Declaration(let, identifier, valType)
       if (consumer.peek(TokenTypesImpl.ASSIGNMENT) != null) {
         val assignment = consumer.consume(TokenTypesImpl.ASSIGNMENT)
@@ -21,7 +34,10 @@ object ParserStrategies {
           val expression = ExpressionParser.parse(consumer)
           DeclarationAssignation(declaration, assignment, expression)
         } else {
-          throw ExpressionExpectedException(consumer.current().component4().getStartLine, consumer.current().component4().getStartCol)
+          throw ExpressionExpectedException(
+            consumer.current().component4().getStartLine,
+            consumer.current().component4().getStartCol
+          )
         }
       } else {
         declaration
@@ -34,12 +50,23 @@ object ParserStrategies {
   }
 
   private def parseOperation(consumer: TokenConsumer, expression: Expression): Expression = {
-    if (consumer.peekAny(TokenTypesImpl.PLUS, TokenTypesImpl.MINUS, TokenTypesImpl.DIVIDEDBY, TokenTypesImpl.TIMES) != null) {
-      val operator = consumer.consumeAny(TokenTypesImpl.PLUS, TokenTypesImpl.MINUS, TokenTypesImpl.DIVIDEDBY, TokenTypesImpl.TIMES)
+    if (
+      consumer.peekAny(
+        TokenTypesImpl.PLUS,
+        TokenTypesImpl.MINUS,
+        TokenTypesImpl.DIVIDEDBY,
+        TokenTypesImpl.TIMES
+      ) != null
+    ) {
+      val operator =
+        consumer.consumeAny(TokenTypesImpl.PLUS, TokenTypesImpl.MINUS, TokenTypesImpl.DIVIDEDBY, TokenTypesImpl.TIMES)
       if (ExpressionParser.canBeParsed(consumer)) {
         Operation(expression, operator, ExpressionParser.parse(consumer))
       } else {
-        throw ExpressionExpectedException(consumer.current().component4().getStartLine, consumer.current().component4().getStartCol)
+        throw ExpressionExpectedException(
+          consumer.current().component4().getStartLine,
+          consumer.current().component4().getStartCol
+        )
       }
     } else {
       expression
@@ -56,23 +83,35 @@ object ParserStrategies {
         variable match {
           case expression: Expression =>
             parseOperation(consumer, expression)
-          case _ => throw ExpressionExpectedException(consumer.current().component4().getStartLine, consumer.current().component4().getStartCol)
+          case _ =>
+            throw ExpressionExpectedException(
+              consumer.current().component4().getStartLine,
+              consumer.current().component4().getStartCol
+            )
         }
       } else {
         consumer.consume(TokenTypesImpl.OPENPAREN)
         if (ExpressionParser.canBeParsed(consumer)) {
           val expression = ExpressionParser.parse(consumer)
-          val result = parseOperation(consumer, expression)
+          val result     = parseOperation(consumer, expression)
           consumer.consume(TokenTypesImpl.CLOSEPAREN)
           ParenExpression(result)
         } else {
-          throw ExpressionExpectedException(consumer.current().component4().getStartLine, consumer.current().component4().getStartCol)
+          throw ExpressionExpectedException(
+            consumer.current().component4().getStartLine,
+            consumer.current().component4().getStartCol
+          )
         }
       }
     }
 
     override def canBeParsed(consumer: TokenConsumer): Boolean = {
-      consumer.peekAny(TokenTypesImpl.STRING, TokenTypesImpl.NUMBER, TokenTypesImpl.IDENTIFIER, TokenTypesImpl.OPENPAREN) != null
+      consumer.peekAny(
+        TokenTypesImpl.STRING,
+        TokenTypesImpl.NUMBER,
+        TokenTypesImpl.IDENTIFIER,
+        TokenTypesImpl.OPENPAREN
+      ) != null
     }
   }
 
@@ -95,13 +134,14 @@ object ParserStrategies {
       }
     }
 
-    override def canBeParsed(consumer: TokenConsumer): Boolean = consumer.peekAny(TokenTypesImpl.STRING, TokenTypesImpl.NUMBER) != null
+    override def canBeParsed(consumer: TokenConsumer): Boolean =
+      consumer.peekAny(TokenTypesImpl.STRING, TokenTypesImpl.NUMBER) != null
   }
 
   case object VariableParser extends SectionParser() {
     override def parse(consumer: TokenConsumer): ASTree = {
       val variable = Variable(consumer.consume(TokenTypesImpl.IDENTIFIER))
-      if (consumer.peek(TokenTypesImpl.ASSIGNMENT)!= null) {
+      if (consumer.peek(TokenTypesImpl.ASSIGNMENT) != null) {
         val assignment = consumer.consume(TokenTypesImpl.ASSIGNMENT)
         val expression = ExpressionParser.parse(consumer)
         VariableAssignation(variable, assignment, expression)
@@ -122,7 +162,10 @@ object ParserStrategies {
         consumer.consume(TokenTypesImpl.CLOSEPAREN)
         PrintLn(function, expression)
       } else {
-        throw ExpressionExpectedException(consumer.current().component4().getStartLine, consumer.current().component4().getStartCol)
+        throw ExpressionExpectedException(
+          consumer.current().component4().getStartLine,
+          consumer.current().component4().getStartCol
+        )
       }
     }
 

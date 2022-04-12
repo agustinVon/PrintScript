@@ -13,13 +13,13 @@ import scala.jdk.CollectionConverters._
 
 case class ParserImpl() extends Parser {
   private val strategies: List[SectionParser] = List(DeclarationParser, LiteralParser, VariableParser, FunctionParser)
-  override def parse(content:ProgramSource, list: List[Token]): ASTree = {
+  override def parse(content: ProgramSource, list: List[Token]): ASTree = {
     val tokenIterator = TokenIterator.create(content.getSourceString, list.asJava)
     val tokenConsumer = TokenConsumerImpl(tokenIterator)
     buildTree(Root(List()), tokenConsumer)
   }
 
-  def buildTree(tree: Root, consumer: TokenConsumer):ASTree = {
+  def buildTree(tree: Root, consumer: TokenConsumer): ASTree = {
     if (consumer.peek(TokenTypesImpl.EOF) != null) {
       tree
     } else {
@@ -28,12 +28,17 @@ case class ParserImpl() extends Parser {
   }
 
   private final def sentenceParse(consumer: TokenConsumer): ASTree = {
-    val strategy = strategies.find(strategy => strategy.canBeParsed(consumer)).getOrElse(throw NoStrategyException())
+    val strategy   = strategies.find(strategy => strategy.canBeParsed(consumer)).getOrElse(throw NoStrategyException())
     val resultTree = strategy.parse(consumer)
     try {
       consumer.consumeAny(TokenTypesImpl.EOL, TokenTypesImpl.SEMICOLON)
     } catch {
-      case e:TokenConsumeException => throw ExpectedEndOfLineException(e.getMessage, consumer.current().component4().getStartLine, consumer.current().component4().getStartCol)
+      case e: TokenConsumeException =>
+        throw ExpectedEndOfLineException(
+          e.getMessage,
+          consumer.current().component4().getStartLine,
+          consumer.current().component4().getStartCol
+        )
     }
     resultTree
   }
