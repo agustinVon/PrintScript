@@ -36,6 +36,20 @@ case class InterpreterImpl() extends Interpreter {
       case DeclarationAssignation(declaration, _, expression) => solveDeclarationAssignation(declaration, expression)
       case Root(sentences) => sentences.foreach(t=>solveAST(t))
       case PrintLn(_, expression) => solvePrintLn(expression)
+      case Declaration(declaration, id, declType) => solveDeclaration(declaration,id, declType)
+    }
+  }
+
+  private def solveDeclaration(declaration: Content[String], id: Content[String], declType: Content[String]): Unit = {
+    if(validationPhase && variableTypes.contains(id.getContent)){
+      throw VariableAlreadyDeclaredException(declaration.getToken.component4().getStartLine, declaration.getToken.component4().getStartCol)
+    }else {
+      (declType.getContent, validationPhase) match {
+          case ("string", true) => variableTypes = variableTypes + (id.getContent -> STR)
+          case ("number", true) => variableTypes = variableTypes + (id.getContent -> NUM)
+          case ("string", false) => variableValues = variableValues + (id.getContent -> Some(""))
+          case ("number", false) => variableValues = variableValues + (id.getContent -> Some(0))
+        }
     }
   }
 
@@ -114,7 +128,14 @@ case class InterpreterImpl() extends Interpreter {
     if(validationPhase){
       Left(NUM)
     }else{
-      Right(Some(value.getContent))
+      val x = value.getToken.getTo - value.getToken.getFrom
+      val number = value.getContent+""
+      val isInt = x<number.length
+      isInt match {
+        case true => Right(Some(value.getContent.toInt))
+        case false => Right(Some(value.getContent))
+      }
+
     }
   }
 

@@ -46,7 +46,8 @@ class InterpreterSuite {
   def stringAndIntegerConcatenationShouldBeStored(): Unit = {
     val content = "let x: string = \"num \"; \n" +
       "let y: number = 10;"+
-      "let z: string = x + y;"
+      "let z: string = x + y;" +
+      "println(z);"
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
@@ -236,6 +237,67 @@ class InterpreterSuite {
     val interpreter = InterpreterImpl()
     interpreter.interpret(ast)
     assert(interpreter.getMemory()("y").get == 5)
+  }
+
+  @Test
+  def declarationWithNoValueShouldStoreVariableWithDefaultValue(): Unit = {
+    val content = "let x: number;" +
+      "x=5;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast)
+    assert(interpreter.getMemory()("x").get == 5)
+  }
+
+  @Test
+  def stringWithPointTest(): Unit = {
+    val content = "let x: string = \"esta es una oracion con .\";"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast)
+    assert(interpreter.getMemory()("x").get == "esta es una oracion con .")
+  }
+
+  @Test
+  def intNumberTest(): Unit = {
+    val content = "let x: number = 1;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast)
+    assert(interpreter.getMemory()("x").get == 1)
+  }
+
+  @Test
+  def decimalNumberTest(): Unit = {
+    val content = "let x: number = 1.0;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast)
+    assert(interpreter.getMemory()("x").get == 1.0)
+  }
+
+  @Test
+  def stringIntConcatenation(): Unit = {
+    val content = "let x: string = \"test \" + 1;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast)
+    assert(interpreter.getMemory()("x").get == "test 1")
+  }
+
+  @Test
+  def stringDecimalConcatenation(): Unit = {
+    val content = "let x: string = \"test \" + 1.0;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast)
+    assert(interpreter.getMemory()("x").get == "test 1.0")
   }
 
 }
