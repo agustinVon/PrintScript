@@ -3,13 +3,13 @@
  */
 package PrintScript
 
-import org.scalatest.funsuite.AnyFunSuite
-import org.junit.runner.RunWith
-import org.scalatestplus.junit.JUnitRunner
+import lexer._
+import parser._
+import interpreter._
+import org.junit.jupiter.api.Test
+import sources.StringProgramSource
 
-@RunWith(classOf[JUnitRunner])
-class AppSuite extends AnyFunSuite {
-  test("App has a greeting") {
-    assert(App.greeting() != null)
-  }
+import scala.jdk.CollectionConverters._
+
+class AppSuite{
 }

@@ -1,25 +1,25 @@
-name: Java CI
-
-on: [push]
-
+name: Publish package to GitHub Packages
+on:
+  release:
+    branches: [main]
+    types: [created]
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK 16
-        uses: actions/setup-java@v3
+      - uses: actions/setup-java@v3
         with:
           java-version: '16'
           distribution: 'adopt'
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
-      - name: Build with Gradle
+      - name: Publish package
         uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
-        env:
-          CI: true
-          USERNAME: ${{ secrets.USERNAME }}
-          TOKEN: ${{ secrets.TOKEN }}
         with:
-          arguments: build
+          arguments: publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

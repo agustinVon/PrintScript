@@ -1,0 +1,17 @@
+plugins {
+    id 'groovy-gradle-plugin'
+    id 'cz.alenkacz.gradle.scalafmt' version '1.16.2'
+}
+
+repositories {
+    maven {
+        url = uri('https://repo.grails.org/artifactory/core')
+    }
+    mavenCentral()
+    gradlePluginPortal()
+}
+
+dependencies {
+    // https://mvnrepository.com/artifact/org.scoverage/gradle-scoverage
+    implementation 'org.scoverage:gradle-scoverage:7.0.0'
+}

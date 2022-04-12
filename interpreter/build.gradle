@@ -6,10 +6,11 @@ plugins {
 }
 
 dependencies {
+    implementation project(':commons')
     implementation project(':lexer')
     implementation project(':parser')
-    implementation project(':interpreter')
-    implementation project(':commons')
 }
 
 version '1.0.0'
+
+build.dependsOn(checkScoverage)
