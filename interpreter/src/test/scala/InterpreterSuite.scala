@@ -300,4 +300,144 @@ class InterpreterSuite {
     assert(interpreter.getMemory()("x").get == "test 1.0")
   }
 
+  @Test
+  def intWithDecimalShouldSum(): Unit = {
+    val content = "let x: number = 4.5 + 3;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast)
+    assert(interpreter.getMemory()("x").get == 7.5)
+  }
+
+  @Test
+  def intWithDecimalShouldSubstract(): Unit = {
+    val content = "let x: number = 4.5 - 3;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast)
+    assert(interpreter.getMemory()("x").get == 1.5)
+  }
+
+  @Test
+  def intWithDecimalShouldMultiply(): Unit = {
+    val content = "let x: number = 4.5 * 2;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast)
+    assert(interpreter.getMemory()("x").get == 9)
+  }
+
+  @Test
+  def intWithDecimalShouldDivide(): Unit = {
+    val content = "let x: number = 12.5 / 2;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast)
+    assert(interpreter.getMemory()("x").get == 6.25)
+  }
+
+  @Test
+  def decimalWithIntShouldSum(): Unit = {
+    val content = "let x: number = 2 + 2.5;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast)
+    assert(interpreter.getMemory()("x").get == 4.5)
+  }
+
+  @Test
+  def decimalWithIntShouldSubstract(): Unit = {
+    val content = "let x: number = 3 - 2.5;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast)
+    assert(interpreter.getMemory()("x").get == 0.5)
+  }
+
+  @Test
+  def decimalWithIntShouldMultiply(): Unit = {
+    val content = "let x: number = 2 * 2.5;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast)
+    assert(interpreter.getMemory()("x").get == 5)
+  }
+
+  @Test
+  def decimalWithIntShouldDivide(): Unit = {
+    val content = "let x: number = 10 / 2.5;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast)
+    assert(interpreter.getMemory()("x").get == 4)
+  }
+
+  @Test
+  def twoDecimalsShouldSum(): Unit = {
+    val content = "let x: number = 2.5 + 2.5;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast)
+    assert(interpreter.getMemory()("x").get == 5)
+  }
+
+  @Test
+  def twoDecimalsShouldSubstract(): Unit = {
+    val content = "let x: number = 5.5 - 2.5;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast)
+    assert(interpreter.getMemory()("x").get == 3)
+  }
+
+  @Test
+  def twoDecimalsShouldMultiply(): Unit = {
+    val content = "let x: number = 1.5 * 0.5;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast)
+    assert(interpreter.getMemory()("x").get == 0.75)
+  }
+
+  @Test
+  def twoDecimalsShouldDivide(): Unit = {
+    val content = "let x: number = 2.5 / 0.5;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast)
+    assert(interpreter.getMemory()("x").get == 5)
+  }
+
+  @Test
+  def aDecimalAndAStringShouldConcatenate(): Unit = {
+    val content = "let x: string = 2.5 + \" test\";"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast)
+    assert(interpreter.getMemory()("x").get == "2.5 test")
+  }
+
+  @Test
+  def aStringAndADecimalShouldConcatenate(): Unit = {
+    val content = "let x: string =  \"test \" +2.5;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast)
+    assert(interpreter.getMemory()("x").get == "test 2.5")
+  }
+
 }
