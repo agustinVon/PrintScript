@@ -4,15 +4,16 @@ import ast.{ASTree, Root}
 import tokens.TokenTypesImpl
 import org.austral.ingsis.printscript.common.{Token, TokenConsumeException, TokenConsumer}
 import org.austral.ingsis.printscript.parser.TokenIterator
-import parser.ParserStrategies.{DeclarationParser, FunctionParser, IfParser, LiteralParser, VariableParser}
+import parser.ParserStrategies.{DeclarationParser, IfParser, LiteralParser, PrintLnParser, ReadInputParser, VariableParser}
 import parser.exceptions.{ExpectedEndOfLineException, NoStrategyException}
 import parser.traits.{Parser, SectionParser}
 import sources.ProgramSource
 import org.austral.ingsis.printscript.common.TokenType
+
 import scala.jdk.CollectionConverters._
 
 case class ParserImpl() extends Parser {
-  private val strategies: List[SectionParser] = List(DeclarationParser, LiteralParser, VariableParser, FunctionParser, IfParser)
+  private val strategies: List[SectionParser] = List(DeclarationParser, LiteralParser, VariableParser, PrintLnParser, IfParser, ReadInputParser)
   override def parse(content: ProgramSource, list: List[Token]): ASTree = {
     val tokenIterator = TokenIterator.create(content.getSourceString, list.asJava)
     val tokenConsumer = TokenConsumerImpl(tokenIterator)

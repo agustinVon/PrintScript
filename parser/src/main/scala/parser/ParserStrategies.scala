@@ -1,6 +1,6 @@
 package parser
 
-import ast.{ASTree, BooleanExpression, Declaration, DeclarationAssignation, Expression, IfCodeBlock, IfElseCodeBlock, LiteralBoolean, LiteralNumber, LiteralString, ParenExpression, PrintLn, Root, SumOrMinus, TimesOrDiv, Variable, VariableAssignation}
+import ast.{ASTree, BooleanExpression, ReadInput, Declaration, DeclarationAssignation, Expression, IfCodeBlock, IfElseCodeBlock, LiteralBoolean, LiteralNumber, LiteralString, ParenExpression, PrintLn, Root, SumOrMinus, TimesOrDiv, Variable, VariableAssignation}
 import org.austral.ingsis.printscript.common.{IntRead, Read, StringRead, TokenConsumer}
 import parser.exceptions.{ExpressionExpectedException, NotABooleanExpressionException}
 import parser.traits.{ExpressionSectionParser, SectionParser}
@@ -190,7 +190,7 @@ object ParserStrategies {
     override def canBeParsed(consumer: TokenConsumer): Boolean = consumer.peek(TokenTypesImpl.OPENPAREN) != null
   }
 
-  case object FunctionParser extends SectionParser() {
+  case object PrintLnParser extends SectionParser() {
     override def parse(consumer: TokenConsumer): ASTree = {
       val function = consumer.consume(TokenTypesImpl.PRINTLN)
       consumer.consume(TokenTypesImpl.OPENPAREN)
@@ -253,5 +253,24 @@ object ParserStrategies {
     }
 
     def canBeParsed(consumer: TokenConsumer): Boolean = consumer.peek(TokenTypesImpl.ELSE) != null
+  }
+
+  case object ReadInputParser extends SectionParser {
+    override def parse(consumer: TokenConsumer): ASTree = {
+      val function = consumer.consume(TokenTypesImpl.READINPUT)
+      consumer.consume(TokenTypesImpl.OPENPAREN)
+      if (ExpressionParser.canBeParsed(consumer)) {
+        val expression = ExpressionParser.parse(consumer)
+        consumer.consume(TokenTypesImpl.CLOSEPAREN)
+        ReadInput(function, expression)
+      } else {
+        throw ExpressionExpectedException(
+          consumer.current().component4().getStartLine,
+          consumer.current().component4().getStartCol
+        )
+      }
+    }
+
+    override def canBeParsed(consumer: TokenConsumer): Boolean = consumer.peek(TokenTypesImpl.READINPUT) != null
   }
 }

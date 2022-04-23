@@ -1,9 +1,9 @@
-import ast.{Declaration, DeclarationAssignation, Expression, IfCodeBlock, IfElseCodeBlock, LiteralBoolean, LiteralNumber, LiteralString, ParenExpression, PrintLn, Root, SumOrMinus, TimesOrDiv, Variable, VariableAssignation}
+import ast.{Declaration, DeclarationAssignation, Expression, IfCodeBlock, IfElseCodeBlock, LiteralBoolean, LiteralNumber, LiteralString, ParenExpression, PrintLn, ReadInput, Root, SumOrMinus, TimesOrDiv, Variable, VariableAssignation}
 import lexer.LexerImpl
 import org.austral.ingsis.printscript.parser.TokenIterator
 import org.junit.jupiter.api.Assertions.{assertFalse, assertThrows}
 import org.junit.jupiter.api.{DisplayName, Nested, Test}
-import parser.ParserStrategies.{DeclarationParser, ExpressionParser, FunctionParser, IfParser, LiteralParser, VariableParser}
+import parser.ParserStrategies.{DeclarationParser, ExpressionParser, IfParser, LiteralParser, PrintLnParser, ReadInputParser, VariableParser}
 import parser.exceptions.{ExpressionExpectedException, NoStrategyException, NotABooleanExpressionException}
 import parser.{ParserImpl, TokenConsumerImpl}
 import sources.StringProgramSource
@@ -49,7 +49,7 @@ class ParserSuite  {
   def functionParserShouldBeAbleToParse():Unit = {
     val consumer = getConsumer("println(\"test\");")
 
-    assert(FunctionParser.canBeParsed(consumer))
+    assert(PrintLnParser.canBeParsed(consumer))
   }
 
   @Test
@@ -174,7 +174,7 @@ class ParserSuite  {
   def functionParserShouldParse():Unit = {
     val consumer = getConsumer("println(\"hello world\")")
 
-    val function = FunctionParser.parse(consumer)
+    val function = PrintLnParser.parse(consumer)
 
     function match {
       case PrintLn(function, expression) =>
@@ -571,6 +571,23 @@ class ParserSuite  {
     val consumer = getConsumer("if(4) { }")
 
     assertThrows(classOf[NotABooleanExpressionException], () => IfParser.parse(consumer))
+  }
+
+  @Test
+  def readInputShouldBeAbleToParse():Unit = {
+    val consumer = getConsumer("readInput(\"Input your value\")")
+
+    val function = ReadInputParser.parse(consumer)
+
+    function match {
+      case ReadInput(function, message) =>
+        assert(function.component1().equals("readInput"))
+        message match {
+          case LiteralString(value) => assert(value.component1().equals("Input your value"))
+          case _ => assert(false)
+        }
+      case _ => assert(false)
+    }
   }
 
 }

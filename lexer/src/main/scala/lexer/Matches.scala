@@ -21,7 +21,7 @@ case class Matches() {
     ),
     (
       TokenTypesImpl.IDENTIFIER,
-      LexerMatcherImpl.fromRegex(TokenTypesImpl.IDENTIFIER, "(?!(string|number|const|boolean|let|println|true|false|if|else)\\b)\\b[_a-zA-Z][_a-zA-Z0-9]{0,30}")
+      LexerMatcherImpl.fromRegex(TokenTypesImpl.IDENTIFIER, "(?!(string|number|const|boolean|let|println|true|false|if|else|readInput)\\b)\\b[_a-zA-Z][_a-zA-Z0-9]{0,30}")
     ),
     (TokenTypesImpl.TYPESTRING, LexerMatcherImpl.fromRegex(TokenTypesImpl.TYPESTRING, "string")),
     (TokenTypesImpl.TYPENUMBER, LexerMatcherImpl.fromRegex(TokenTypesImpl.TYPENUMBER, "number")),
