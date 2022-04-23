@@ -1,10 +1,10 @@
-import ast.{Declaration, DeclarationAssignation, Expression, LiteralNumber, LiteralString, ParenExpression, PrintLn, Root, SumOrMinus, TimesOrDiv, Variable, VariableAssignation}
+import ast.{Declaration, DeclarationAssignation, Expression, IfCodeBlock, IfElseCodeBlock, LiteralBoolean, LiteralNumber, LiteralString, ParenExpression, PrintLn, Root, SumOrMinus, TimesOrDiv, Variable, VariableAssignation}
 import lexer.LexerImpl
 import org.austral.ingsis.printscript.parser.TokenIterator
-import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.{assertFalse, assertThrows}
 import org.junit.jupiter.api.{DisplayName, Nested, Test}
-import parser.ParserStrategies.{DeclarationParser, ExpressionParser, FunctionParser, LiteralParser, VariableParser}
-import parser.exceptions.{ExpressionExpectedException, NoStrategyException}
+import parser.ParserStrategies.{DeclarationParser, ExpressionParser, FunctionParser, IfParser, LiteralParser, VariableParser}
+import parser.exceptions.{ExpressionExpectedException, NoStrategyException, NotABooleanExpressionException}
 import parser.{ParserImpl, TokenConsumerImpl}
 import sources.StringProgramSource
 
@@ -461,4 +461,116 @@ class ParserSuite  {
     val consumer = getConsumer("2 ++ 3")
     assertThrows(classOf[ExpressionExpectedException], () => ExpressionParser.parse(consumer))
   }
+
+  @Test
+  def ifBlockShouldBeAbleToParse():Unit = {
+    val consumer = getConsumer("if")
+
+    assert(IfParser.canBeParsed(consumer))
+  }
+
+  @Test
+  def ifBlockShouldBeParsed():Unit = {
+    val consumer = getConsumer("if(true){ a = 4; b = a + 5; }")
+
+    val ifBlock = IfParser.parse(consumer)
+
+    ifBlock match {
+      case IfCodeBlock(condition, codeBlock) => {
+        condition match {
+          case LiteralBoolean(value) => assert(value.component1())
+          case _ => assert(false)
+        }
+        assert(codeBlock.sentences.length == 2)
+      }
+    }
+  }
+
+  @Test
+  def declarationAssignationOfBooleanShouldBeParsed():Unit = {
+    val consumer = getConsumer("let a:boolean = false")
+
+    val declaration = DeclarationParser.parse(consumer)
+
+    declaration match {
+      case DeclarationAssignation(declaration, assignation, expression) =>
+        assert(declaration.declType.component1().equals("boolean"))
+        expression match {
+          case LiteralBoolean(value) => assertFalse(value.component1())
+        }
+    }
+  }
+
+  @Test
+  def parserShouldBeAbleToParseIfStatements():Unit = {
+    val content = "if (true) { let a:number = 10 * 5 + 8; println(a); };"
+    val lexer = LexerImpl()
+    val tokens = lexer.lex(StringProgramSource(content))
+    val parser = ParserImpl()
+
+    val ast = parser.parse(StringProgramSource(content), tokens)
+
+    ast match {
+      case Root(sentences) =>
+        sentences.head match {
+          case IfCodeBlock(condition, block) =>
+            condition match {
+              case LiteralBoolean(value) => assert(value.component1())
+              case _ => assert(false)
+            }
+            assert(block.sentences.length == 2)
+          case _ => assert(false)
+        }
+    }
+  }
+
+  @Test
+  def ifElseBlockShouldBeParsed():Unit = {
+    val consumer = getConsumer("if(true){ a = 4; b = a + 5; } else { a = 7; }")
+
+    val ifElseBlock = IfParser.parse(consumer)
+
+    ifElseBlock match {
+      case IfElseCodeBlock(condition, ifCodeBlock, elseCodeBlock) => {
+        condition match {
+          case LiteralBoolean(value) => assert(value.component1())
+          case _ => assert(false)
+        }
+        assert(ifCodeBlock.sentences.length == 2)
+        assert(elseCodeBlock.sentences.length == 1)
+      }
+    }
+  }
+
+  @Test
+  def parserShouldBeAbleToParseIfElseStatements():Unit = {
+    val content = "if (true) { let a:number = 10 * 5 + 8; println(a); } else { b = c * 9; };"
+    val lexer = LexerImpl()
+    val tokens = lexer.lex(StringProgramSource(content))
+    val parser = ParserImpl()
+
+    val ast = parser.parse(StringProgramSource(content), tokens)
+
+    ast match {
+      case Root(sentences) =>
+        sentences.head match {
+          case IfElseCodeBlock(condition, ifBlock, elseBlock) =>
+            condition match {
+              case LiteralBoolean(value) => assert(value.component1())
+              case _ => assert(false)
+            }
+            assert(ifBlock.sentences.length == 2)
+            assert(elseBlock.sentences.length == 1)
+          case _ => assert(false)
+        }
+    }
+  }
+
+  @Test
+  def ifConditionIsNotBooleanShouldFail():Unit = {
+    val consumer = getConsumer("if(4) { }")
+
+    assertThrows(classOf[NotABooleanExpressionException], () => IfParser.parse(consumer))
+  }
+
 }
