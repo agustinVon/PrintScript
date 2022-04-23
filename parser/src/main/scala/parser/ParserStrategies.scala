@@ -6,8 +6,6 @@ import parser.exceptions.ExpressionExpectedException
 import parser.traits.{ExpressionSectionParser, OperationParser, SectionParser}
 import tokens.TokenTypesImpl
 
-import scala.annotation.tailrec
-
 object ParserStrategies {
 
   case object DeclarationParser extends SectionParser() {
