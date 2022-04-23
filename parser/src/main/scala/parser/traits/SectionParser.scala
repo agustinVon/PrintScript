@@ -11,3 +11,8 @@ trait SectionParser {
 trait ExpressionSectionParser extends SectionParser {
   override def parse(consumer: TokenConsumer): Expression
 }
+
+trait OperationParser {
+  def parse(exp: Expression, consumer: TokenConsumer): Expression
+  def canBeParsed(consumer: TokenConsumer): Boolean
+}

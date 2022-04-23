@@ -10,7 +10,8 @@ sealed trait Expression                                                         
 case class LiteralString(value: Content[String])                                                     extends Expression
 case class LiteralNumber(value: Content[Double])                                                     extends Expression
 case class Variable(value: Content[String])                                                          extends Expression
-case class Operation(exp1: Expression, operator: Content[String], exp2: Expression)                  extends Expression
+case class SumOrMinus(exp1: Expression, operator: Content[String], exp2: Expression) extends Expression
+case class TimesOrDiv(exp1: Expression, operator: Content[String], exp2: Expression) extends Expression
 case class PrintLn(function: Content[String], expression: Expression)                                extends ASTree
 case class DeclarationAssignation(declaration: Declaration, assignation: Content[String], expression: Expression)
     extends ASTree

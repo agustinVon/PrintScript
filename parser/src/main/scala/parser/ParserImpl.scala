@@ -9,6 +9,7 @@ import parser.exceptions.{ExpectedEndOfLineException, NoStrategyException}
 import parser.traits.{Parser, SectionParser}
 import sources.ProgramSource
 
+import scala.annotation.tailrec
 import scala.jdk.CollectionConverters._
 
 case class ParserImpl() extends Parser {
@@ -19,7 +20,8 @@ case class ParserImpl() extends Parser {
     buildTree(Root(List()), tokenConsumer)
   }
 
-  def buildTree(tree: Root, consumer: TokenConsumer): ASTree = {
+  @tailrec
+  private def buildTree(tree: Root, consumer: TokenConsumer): ASTree = {
     if (consumer.peek(TokenTypesImpl.EOF) != null) {
       tree
     } else {
