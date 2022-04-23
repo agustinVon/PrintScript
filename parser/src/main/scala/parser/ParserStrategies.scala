@@ -1,6 +1,6 @@
 package parser
 
-import ast.{ASTree, Declaration, DeclarationAssignation, Expression, LiteralNumber, LiteralString, ParenExpression, PrintLn, Root, SumOrMinus, TimesOrDiv, Variable, VariableAssignation}
+import ast.{ASTree, Declaration, DeclarationAssignation, Expression, LiteralNumber, LiteralString, ParenExpression, PrintLn, SumOrMinus, TimesOrDiv, Variable, VariableAssignation}
 import org.austral.ingsis.printscript.common.{IntRead, Read, StringRead, TokenConsumer}
 import parser.exceptions.ExpressionExpectedException
 import parser.traits.{ExpressionSectionParser, OperationParser, SectionParser}
