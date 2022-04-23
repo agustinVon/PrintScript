@@ -7,8 +7,7 @@ case class Matches() {
   def getMatches: List[(TokenType, LexerMatcher)] = List(
     (TokenTypesImpl.LET, LexerMatcherImpl.fromRegex(TokenTypesImpl.LET, "let")),
     (TokenTypesImpl.PRINTLN, LexerMatcherImpl.fromRegex(TokenTypesImpl.PRINTLN, "println")),
-    (TokenTypesImpl.TYPESTRING, LexerMatcherImpl.fromRegex(TokenTypesImpl.TYPESTRING, "string")),
-    (TokenTypesImpl.TYPENUMBER, LexerMatcherImpl.fromRegex(TokenTypesImpl.TYPENUMBER, "number")),
+
     (TokenTypesImpl.PLUS, LexerMatcherImpl.fromRegex(TokenTypesImpl.PLUS, "[+]")),
     (TokenTypesImpl.MINUS, LexerMatcherImpl.fromRegex(TokenTypesImpl.MINUS, "[-]")),
     (TokenTypesImpl.TIMES, LexerMatcherImpl.fromRegex(TokenTypesImpl.TIMES, "[*]")),
@@ -23,8 +22,10 @@ case class Matches() {
     ),
     (
       TokenTypesImpl.IDENTIFIER,
-      LexerMatcherImpl.fromRegex(TokenTypesImpl.IDENTIFIER, "(?:\\b[_a-zA-Z]|\\B\\$)[_\\$a-zA-Z0-9]*+")
+      LexerMatcherImpl.fromRegex(TokenTypesImpl.IDENTIFIER, "(?!(string|number|const)\\b)\\b[_a-zA-Z][_a-zA-Z0-9]{0,30}")
     ),
+    (TokenTypesImpl.TYPESTRING, LexerMatcherImpl.fromRegex(TokenTypesImpl.TYPESTRING, "string")),
+    (TokenTypesImpl.TYPENUMBER, LexerMatcherImpl.fromRegex(TokenTypesImpl.TYPENUMBER, "number")),
     (TokenTypesImpl.WHITESPACE, LexerMatcherImpl.fromRegex(TokenTypesImpl.WHITESPACE, " ")),
     (TokenTypesImpl.COLON, LexerMatcherImpl.fromRegex(TokenTypesImpl.COLON, "[:]")),
     (TokenTypesImpl.SEMICOLON, LexerMatcherImpl.fromRegex(TokenTypesImpl.SEMICOLON, "[;]")),

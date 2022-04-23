@@ -1,26 +1,8 @@
 package interpreter
 
 import interpreter.ExpressionResultType.{ExpressionResultType, NUM, STR}
-import ast.{
-  ASTree,
-  Declaration,
-  DeclarationAssignation,
-  Expression,
-  LiteralNumber,
-  LiteralString,
-  Operation,
-  ParenExpression,
-  PrintLn,
-  Root,
-  Variable,
-  VariableAssignation
-}
-import exceptions.{
-  InvalidOperationException,
-  TypeMismatchException,
-  VariableAlreadyDeclaredException,
-  VariableNotDeclaredException
-}
+import ast.{ASTree, Declaration, DeclarationAssignation, Expression, LiteralNumber, LiteralString, ParenExpression, PrintLn, Root, SumOrMinus, TimesOrDiv, Variable, VariableAssignation}
+import exceptions.{InvalidOperationException, TypeMismatchException, VariableAlreadyDeclaredException, VariableNotDeclaredException}
 import org.austral.ingsis.printscript.parser.Content
 
 case class InterpreterImpl() extends Interpreter {
@@ -129,11 +111,12 @@ case class InterpreterImpl() extends Interpreter {
 
   private def solveExpression(expression: Expression): InterpreterResult = {
     expression match {
-      case Operation(exp1, operator, exp2) => solveOperation(exp1, operator, exp2)
-      case ParenExpression(expression)     => solveExpression(expression)
-      case Variable(value)                 => solveVariable(value)
-      case LiteralNumber(value)            => solveLiteralNumber(value)
-      case LiteralString(value)            => solveLiteralString(value)
+      case ParenExpression(expression) => solveExpression(expression)
+      case Variable(value) => solveVariable(value)
+      case LiteralNumber(value) => solveLiteralNumber(value)
+      case LiteralString(value) => solveLiteralString(value)
+      case SumOrMinus(exp1, operator, exp2) => solveOperation(exp1, operator, exp2)
+      case TimesOrDiv(exp1, operator, exp2) => solveOperation(exp1, operator, exp2)
     }
   }
 

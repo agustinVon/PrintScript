@@ -432,12 +432,12 @@ class InterpreterSuite {
 
   @Test
   def aStringAndADecimalShouldConcatenate(): Unit = {
-    val content = "let x: string =  \"test \" +2.5;"
+    val content = "let numberMy: string =  \"test \" +2.5;"
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
     interpreter.interpret(ast, println)
-    assert(interpreter.getMemory()("x").get == "test 2.5")
+    assert(interpreter.getMemory()("numberMy").get == "test 2.5")
   }
 
 }
