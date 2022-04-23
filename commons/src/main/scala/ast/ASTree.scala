@@ -17,3 +17,7 @@ case class DeclarationAssignation(declaration: Declaration, assignation: Content
     extends ASTree
 case class VariableAssignation(variable: Variable, assignation: Content[String], expression: Expression) extends ASTree
 case class ParenExpression(expression: Expression)                                                       extends Expression
+case class LiteralBoolean(value: Content[Boolean]) extends Expression
+case class IfCodeBlock(condition: LiteralBoolean, codeBlock: ASTree) extends ASTree
+case class IfElseCodeBlock(condition: LiteralBoolean, ifCodeBlock: ASTree, elseCodeBlock: ASTree) extends ASTree
+case class ReadInput(function: Content[String]) extends ASTree
