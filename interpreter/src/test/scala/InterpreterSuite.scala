@@ -440,4 +440,14 @@ class InterpreterSuite {
     assert(interpreter.getMemory()("numberMy").get == "test 2.5")
   }
 
+  @Test
+  def precedenceTest1(): Unit = {
+    val content = "let numberMy: number = 2 ;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast, println)
+    assert(interpreter.getMemory()("numberMy").get == 2)
+  }
+
 }
