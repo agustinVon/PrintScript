@@ -590,4 +590,24 @@ class ParserSuite  {
     }
   }
 
+  @Test
+  def constDeclarationShouldBeAbleToParse():Unit = {
+    val consumer = getConsumer("const a:string")
+
+    assert(DeclarationParser.canBeParsed(consumer))
+  }
+
+  @Test
+  def constDeclarationShouldBeParsed():Unit = {
+    val consumer = getConsumer("const a:string")
+
+    val declaration = DeclarationParser.parse(consumer)
+
+    declaration match {
+      case Declaration(declaration, _, _) =>
+        assert(declaration.component1().equals("const"))
+      case _ => assert(false)
+    }
+  }
+
 }

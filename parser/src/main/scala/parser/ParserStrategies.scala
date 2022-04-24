@@ -10,11 +10,11 @@ object ParserStrategies {
 
   case object DeclarationParser extends SectionParser() {
     override def parse(consumer: TokenConsumer): ASTree = {
-      val let        = consumer.consume(TokenTypesImpl.LET)
+      val decType        = consumer.consumeAny(TokenTypesImpl.LET, TokenTypesImpl.CONST)
       val identifier = consumer.consume(TokenTypesImpl.IDENTIFIER)
       consumer.consume(TokenTypesImpl.COLON)
       val valType     = consumer.consumeAny(TokenTypesImpl.TYPESTRING, TokenTypesImpl.TYPENUMBER, TokenTypesImpl.TYPEBOOLEAN)
-      val declaration = Declaration(let, identifier, valType)
+      val declaration = Declaration(decType, identifier, valType)
       val shouldParseAssignment = consumer.peek(TokenTypesImpl.ASSIGNMENT) != null
       if (shouldParseAssignment) {
         val assignment = consumer.consume(TokenTypesImpl.ASSIGNMENT)
@@ -33,7 +33,7 @@ object ParserStrategies {
     }
 
     override def canBeParsed(consumer: TokenConsumer): Boolean = {
-      consumer.peek(TokenTypesImpl.LET) != null
+      consumer.peekAny(TokenTypesImpl.LET, TokenTypesImpl.CONST) != null
     }
   }
 
