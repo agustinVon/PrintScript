@@ -1,4 +1,4 @@
-import exceptions.{InvalidOperationException, TypeMismatchException}
+import exceptions.{ConstantAlreadyDeclaredException, ConstantMustBeInitializedWithValueException, ConstantValueCannotBeModifiedException, InvalidOperationException, TypeMismatchException, VariableAlreadyDeclaredException}
 import interpreter.InterpreterImpl
 import lexer.LexerImpl
 import org.junit.jupiter.api.Test
@@ -240,14 +240,14 @@ class InterpreterSuite {
   }
 
   @Test
-  def declarationWithNoValueShouldStoreVariableWithDefaultValue(): Unit = {
-    val content = "let x: number;" +
-      "x=5;"
+  def variableDeclarationWithNoValueShouldStoreVariableWithDefaultValue(): Unit = {
+    val content = "let x: boolean;" +
+      "x=true;"
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
     interpreter.interpret(ast, println)
-    assert(interpreter.getMemory()("x").get == 5)
+    assert(interpreter.getMemory()("x").get == true)
   }
 
   @Test
@@ -448,6 +448,126 @@ class InterpreterSuite {
     val interpreter = InterpreterImpl()
     interpreter.interpret(ast, println)
     assert(interpreter.getMemory()("numberMy").get == 2)
+  }
+
+  @Test
+  def ifTest(): Unit = {
+    val content = "let numberMy: number = 2;" +
+      "let value: boolean = true;" +
+      "if (true){" +
+      "numberMy = 3;" +
+      "};"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast, println)
+    assert(interpreter.getMemory()("numberMy").get == 3)
+  }
+
+  @Test
+  def ifElseTest(): Unit = {
+    val content = "let numberMy: number = 2;" +
+      "let value: boolean = true;" +
+      "if (false){" +
+      "numberMy = 3;" +
+      "}else{" +
+      "numberMy = 5;};"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast, println)
+    assert(interpreter.getMemory()("numberMy").get == 5)
+  }
+
+  @Test
+  def constAsignationShouldStoreValue(): Unit = {
+    val content = "const numberMy: number = 2;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast, println)
+    assert(interpreter.getMemory()("numberMy").get == 2)
+  }
+
+  @Test
+  def constAsignationWithoutValueShouldRaiseError(): Unit = {
+    val content = "const numberMy: number;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    assertThrows(classOf[ConstantMustBeInitializedWithValueException], () => interpreter.interpret(ast, println))
+  }
+
+  @Test
+  def constShouldRaiseErrorWhenTriedToModifyValue(): Unit = {
+    val content = "const numberMy: number = 4;" +
+      "numberMy = 5;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    assertThrows(classOf[ConstantValueCannotBeModifiedException], () => interpreter.interpret(ast, println))
+  }
+
+  @Test
+  def variableAssignationShouldRaiseAnErrorWhenConstWithSameIdentifierWasPreviouslyInitialized(): Unit = {
+    val content = "const numberMy: number = 4;" +
+      "let numberMy:number = 5;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    assertThrows(classOf[ConstantAlreadyDeclaredException], () => interpreter.interpret(ast, println))
+  }
+
+  @Test
+  def constAssignationShouldRaiseAnErrorWhenVariableWithSameIdentifierWasPreviouslyInitialized(): Unit = {
+    val content = "let numberMy: number = 4;" +
+      "const numberMy:number = 5;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    assertThrows(classOf[VariableAlreadyDeclaredException], () => interpreter.interpret(ast, println))
+  }
+
+  @Test
+  def variableAssignationShouldRaiseAnErrorWhenVariableWithSameIdentifierWasPreviouslyInitialized(): Unit = {
+    val content = "let numberMy: number = 4;" +
+      "let numberMy:number = 5;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    assertThrows(classOf[VariableAlreadyDeclaredException], () => interpreter.interpret(ast, println))
+  }
+
+  @Test
+  def constAssignationShouldRaiseAnErrorWhenConstWithSameIdentifierWasPreviouslyInitialized(): Unit = {
+    val content = "const numberMy: number = 4;" +
+      "const numberMy:number = 5;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    assertThrows(classOf[ConstantAlreadyDeclaredException], () => interpreter.interpret(ast, println))
+  }
+
+  @Test
+  def constShouldBeInitializedWithVariableValue(): Unit = {
+    val content = "let numberMy: number = 4;" +
+      "const constNumber:number = numberMy;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast, println)
+    assert(interpreter.getMemory()("constNumber").get == 4)
+  }
+
+  @Test
+  def variableShouldBeInitializedWithConstValue(): Unit = {
+    val content = "const constNumber: number = 4;" +
+      "let variableNumber:number = constNumber;"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast, println)
+    assert(interpreter.getMemory()("variableNumber").get == 4)
   }
 
 }
