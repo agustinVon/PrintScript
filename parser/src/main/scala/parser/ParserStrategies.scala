@@ -211,7 +211,7 @@ object ParserStrategies {
 
   private def parseCondition(consumer: TokenConsumer): BooleanExpression = {
     consumer.consume(TokenTypesImpl.OPENPAREN)
-    LiteralParser.parse(consumer) match {
+    UnitParser.parse(consumer) match {
       case condition: BooleanExpression =>
         consumer.consume(TokenTypesImpl.CLOSEPAREN)
         condition

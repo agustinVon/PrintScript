@@ -610,4 +610,27 @@ class ParserSuite  {
     }
   }
 
+  @Test
+  def booleanDeclarationIfShouldBeParsed():Unit = {
+    val content = "let a:boolean = true; if(a){ a = b + 4; };"
+    val lexer = LexerImpl()
+    val tokens = lexer.lex(StringProgramSource(content))
+    val parser = ParserImpl()
+
+    val ast = parser.parse(StringProgramSource(content), tokens)
+
+    ast match {
+      case Root(sentences) =>
+        sentences.tail.head match {
+          case IfCodeBlock(condition, _) =>
+            condition match {
+              case Variable(value) =>
+                assert(value.component1().equals("a"))
+              case _ => assert(false)
+            }
+          case _ => assert(false)
+        }
+    }
+  }
+
 }
