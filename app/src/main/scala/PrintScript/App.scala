@@ -43,7 +43,7 @@ object App {
   def interpret(source: FileProgramSource, displayMethod: (String) => Unit): Unit = {
     val tokens = lexer.lex(source)
     val ast    = parser.parse(source, tokens)
-    interpreter.interpret(ast, displayMethod)
+    interpreter.interpret(ast, displayMethod, scala.io.StdIn.readLine)
   }
 
   def validate(source: FileProgramSource, displayMethod: (String) => Unit): Unit = {

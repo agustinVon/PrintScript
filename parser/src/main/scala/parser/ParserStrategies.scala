@@ -110,8 +110,10 @@ object ParserStrategies {
               consumer.current().component4().getStartCol
             )
         }
-      } else if (ParenParser.canBeParsed(consumer)){
+      } else if (ParenParser.canBeParsed(consumer)) {
         ParenParser.parse(consumer)
+      } else if (ReadInputParser.canBeParsed(consumer)) {
+        ReadInputParser.parse(consumer)
       } else {
         throw ExpressionExpectedException(
           consumer.current().component4().getStartLine,
@@ -255,8 +257,8 @@ object ParserStrategies {
     def canBeParsed(consumer: TokenConsumer): Boolean = consumer.peek(TokenTypesImpl.ELSE) != null
   }
 
-  case object ReadInputParser extends SectionParser {
-    override def parse(consumer: TokenConsumer): ASTree = {
+  case object ReadInputParser extends ExpressionSectionParser {
+    override def parse(consumer: TokenConsumer): Expression = {
       val function = consumer.consume(TokenTypesImpl.READINPUT)
       consumer.consume(TokenTypesImpl.OPENPAREN)
       if (ExpressionParser.canBeParsed(consumer)) {

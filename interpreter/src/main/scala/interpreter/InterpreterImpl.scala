@@ -16,7 +16,7 @@ case class InterpreterImpl() extends Interpreter {
   private val operationSolver: OperationSolver                 = OperationSolverImpl()
 
 
-  override def interpret(ast: ASTree, displayMethod: (String) => Unit): Unit = {
+  override def interpret(ast: ASTree, displayMethod: (String) => Unit, input: () => String): Unit = {
     validate(ast, displayMethod)
     variableValues = Map()
     solveAST(ast, displayMethod)

@@ -21,4 +21,4 @@ case class ParenExpression(expression: Expression)                              
 case class LiteralBoolean(value: Content[Boolean]) extends BooleanExpression
 case class IfCodeBlock(condition: BooleanExpression, codeBlock: Root) extends ASTree
 case class IfElseCodeBlock(condition: BooleanExpression, ifCodeBlock: Root, elseCodeBlock: Root) extends ASTree
-case class ReadInput(function: Content[String], message: Expression) extends ASTree
+case class ReadInput(function: Content[String], message: Expression) extends Expression
