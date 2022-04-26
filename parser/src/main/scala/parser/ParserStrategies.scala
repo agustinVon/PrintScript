@@ -1,6 +1,25 @@
 package parser
 
-import ast.{ASTree, BooleanExpression, ReadInput, Declaration, DeclarationAssignation, Expression, IfCodeBlock, IfElseCodeBlock, LiteralBoolean, LiteralNumber, LiteralString, ParenExpression, PrintLn, Root, SumOrMinus, TimesOrDiv, Variable, VariableAssignation}
+import ast.{
+  ASTree,
+  BooleanExpression,
+  ReadInput,
+  Declaration,
+  DeclarationAssignation,
+  Expression,
+  IfCodeBlock,
+  IfElseCodeBlock,
+  LiteralBoolean,
+  LiteralNumber,
+  LiteralString,
+  ParenExpression,
+  PrintLn,
+  Root,
+  SumOrMinus,
+  TimesOrDiv,
+  Variable,
+  VariableAssignation
+}
 import org.austral.ingsis.printscript.common.{IntRead, Read, StringRead, TokenConsumer}
 import parser.exceptions.{ExpressionExpectedException, NotABooleanExpressionException}
 import parser.traits.{ExpressionSectionParser, SectionParser}
@@ -10,11 +29,12 @@ object ParserStrategies {
 
   case object DeclarationParser extends SectionParser() {
     override def parse(consumer: TokenConsumer): ASTree = {
-      val decType        = consumer.consumeAny(TokenTypesImpl.LET, TokenTypesImpl.CONST)
+      val decType    = consumer.consumeAny(TokenTypesImpl.LET, TokenTypesImpl.CONST)
       val identifier = consumer.consume(TokenTypesImpl.IDENTIFIER)
       consumer.consume(TokenTypesImpl.COLON)
-      val valType     = consumer.consumeAny(TokenTypesImpl.TYPESTRING, TokenTypesImpl.TYPENUMBER, TokenTypesImpl.TYPEBOOLEAN)
-      val declaration = Declaration(decType, identifier, valType)
+      val valType =
+        consumer.consumeAny(TokenTypesImpl.TYPESTRING, TokenTypesImpl.TYPENUMBER, TokenTypesImpl.TYPEBOOLEAN)
+      val declaration           = Declaration(decType, identifier, valType)
       val shouldParseAssignment = consumer.peek(TokenTypesImpl.ASSIGNMENT) != null
       if (shouldParseAssignment) {
         val assignment = consumer.consume(TokenTypesImpl.ASSIGNMENT)
@@ -54,9 +74,9 @@ object ParserStrategies {
     def parse(exp: Expression, consumer: TokenConsumer): Expression = {
       if (consumer.peekAny(TokenTypesImpl.PLUS, TokenTypesImpl.MINUS) != null) {
         val operator = consumer.consumeAny(TokenTypesImpl.PLUS, TokenTypesImpl.MINUS)
-        val lit = UnitParser.parse(consumer)
+        val lit      = UnitParser.parse(consumer)
         if (TimesOrDivParser.canBeParsed(consumer)) {
-          val op = TimesOrDivParser.parse(lit, consumer)
+          val op  = TimesOrDivParser.parse(lit, consumer)
           val sum = SumOrMinus(exp, operator, op)
           if (canBeParsed(consumer)) {
             parse(sum, consumer)
@@ -77,13 +97,18 @@ object ParserStrategies {
       }
     }
 
-    def canBeParsed(consumer: TokenConsumer): Boolean = consumer.peekAny(TokenTypesImpl.PLUS, TokenTypesImpl.MINUS, TokenTypesImpl.TIMES, TokenTypesImpl.DIVIDEDBY) != null
+    def canBeParsed(consumer: TokenConsumer): Boolean = consumer.peekAny(
+      TokenTypesImpl.PLUS,
+      TokenTypesImpl.MINUS,
+      TokenTypesImpl.TIMES,
+      TokenTypesImpl.DIVIDEDBY
+    ) != null
   }
 
   case object TimesOrDivParser {
     def parse(exp: Expression, consumer: TokenConsumer): Expression = {
       val operator = consumer.consumeAny(TokenTypesImpl.TIMES, TokenTypesImpl.DIVIDEDBY)
-      val lit = UnitParser.parse(consumer)
+      val lit      = UnitParser.parse(consumer)
       if (TimesOrDivParser.canBeParsed(consumer)) {
         val op = TimesOrDivParser.parse(lit, consumer)
         TimesOrDiv(exp, operator, op)
@@ -92,14 +117,15 @@ object ParserStrategies {
       }
     }
 
-    def canBeParsed(consumer: TokenConsumer): Boolean = consumer.peekAny(TokenTypesImpl.TIMES, TokenTypesImpl.DIVIDEDBY) != null
+    def canBeParsed(consumer: TokenConsumer): Boolean =
+      consumer.peekAny(TokenTypesImpl.TIMES, TokenTypesImpl.DIVIDEDBY) != null
   }
 
   case object UnitParser extends ExpressionSectionParser() {
     override def parse(consumer: TokenConsumer): Expression = {
       if (LiteralParser.canBeParsed(consumer)) {
         LiteralParser.parse(consumer)
-      } else if (VariableParser.canBeParsed(consumer)){
+      } else if (VariableParser.canBeParsed(consumer)) {
         val variable = VariableParser.parse(consumer)
         variable match {
           case expression: Expression =>
@@ -122,7 +148,10 @@ object ParserStrategies {
       }
     }
 
-    override def canBeParsed(consumer: TokenConsumer): Boolean = LiteralParser.canBeParsed(consumer) || VariableParser.canBeParsed(consumer) || ParenParser.canBeParsed(consumer) || ReadInputParser.canBeParsed(consumer)
+    override def canBeParsed(consumer: TokenConsumer): Boolean =
+      LiteralParser.canBeParsed(consumer) || VariableParser.canBeParsed(consumer) || ParenParser.canBeParsed(
+        consumer
+      ) || ReadInputParser.canBeParsed(consumer)
   }
 
   case object VariableParser extends SectionParser() {
@@ -163,7 +192,7 @@ object ParserStrategies {
     override def parse(consumer: TokenConsumer): Expression = {
       if (consumer.peek(TokenTypesImpl.STRING) != null) {
         LiteralString(consumer.consume(TokenTypesImpl.STRING))
-      } else if (consumer.peek(TokenTypesImpl.NUMBER) != null){
+      } else if (consumer.peek(TokenTypesImpl.NUMBER) != null) {
         LiteralNumber(consumer.consume(TokenTypesImpl.NUMBER, MyIntRead))
       } else {
         LiteralBoolean(consumer.consume(TokenTypesImpl.BOOLEAN, MyBooleanRead))
@@ -217,16 +246,17 @@ object ParserStrategies {
       case condition: BooleanExpression =>
         consumer.consume(TokenTypesImpl.CLOSEPAREN)
         condition
-      case _ => throw NotABooleanExpressionException(
-        consumer.current().component4().getStartLine,
-        consumer.current().component4().getStartCol
-      )
+      case _ =>
+        throw NotABooleanExpressionException(
+          consumer.current().component4().getStartLine,
+          consumer.current().component4().getStartCol
+        )
     }
   }
 
   private def parseCodeBlock(consumer: TokenConsumer): Root = {
     consumer.consume(TokenTypesImpl.OPENBRACE)
-    val parser = ParserImpl()
+    val parser   = ParserImpl()
     val codeTree = parser.buildTree(Root(List()), consumer, TokenTypesImpl.CLOSEBRACE)
     consumer.consume(TokenTypesImpl.CLOSEBRACE)
     codeTree
@@ -236,7 +266,7 @@ object ParserStrategies {
     override def parse(consumer: TokenConsumer): ASTree = {
       consumer.consume(TokenTypesImpl.IF)
       val condition = parseCondition(consumer)
-      val block = parseCodeBlock(consumer)
+      val block     = parseCodeBlock(consumer)
       if (ElseParser.canBeParsed(consumer)) {
         ElseParser.parse(consumer, condition, block)
       } else {
@@ -248,7 +278,7 @@ object ParserStrategies {
   }
 
   private case object ElseParser {
-    def parse(consumer: TokenConsumer, condition: BooleanExpression, ifBlock:Root): ASTree = {
+    def parse(consumer: TokenConsumer, condition: BooleanExpression, ifBlock: Root): ASTree = {
       consumer.consume(TokenTypesImpl.ELSE)
       val elseBlock = parseCodeBlock(consumer)
       IfElseCodeBlock(condition, ifBlock, elseBlock)
