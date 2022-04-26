@@ -1,6 +1,5 @@
 package interpreter
 
-import ast.Operation
 import exceptions.InvalidOperationException
 import interpreter.ExpressionResultType.{ExpressionResultType, NUM, STR}
 import org.austral.ingsis.printscript.parser.Content

@@ -1,5 +1,5 @@
 import lexer._
-import org.austral.ingsis.printscript.common.Token
+import org.austral.ingsis.printscript.common.{Token, TokenType}
 import org.junit.jupiter.api.Test
 import sources.StringProgramSource
 import tokens.TokenTypesImpl
@@ -27,8 +27,8 @@ class LexerSuite {
   def testMatches() = {
     val matches = Matches().getMatches
     val letMatcher = LexerMatcherImpl.fromRegex(TokenTypesImpl.LET,"let")
-    println(matches.head._2.getPattern)
-    assert(matches.head._2.getPattern.toString.equals(letMatcher.getPattern.toString))
+    val letMatcherInMatches:(TokenType, LexerMatcher) = matches.find(patternMatched => patternMatched._1 == TokenTypesImpl.LET).get
+    assert(letMatcherInMatches._2.getPattern.toString.equals(letMatcher.getPattern.toString))
   }
 
   @Test

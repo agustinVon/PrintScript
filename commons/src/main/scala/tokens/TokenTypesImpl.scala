@@ -84,6 +84,38 @@ object TokenTypesImpl {
     override def getType: String = "EOL"
   }
 
+  case object IF extends ComparableToken {
+    override def getType: String = "IF"
+  }
+
+  case object ELSE extends ComparableToken {
+    override def getType: String = "ELSE"
+  }
+
+  case object OPENBRACE extends ComparableToken {
+    override def getType: String = "OPENBRACE"
+  }
+
+  case object CLOSEBRACE extends ComparableToken {
+    override def getType: String = "CLOSEBRACE"
+  }
+
+  case object BOOLEAN extends ComparableToken {
+    override def getType: String = "BOOLEAN"
+  }
+
+  case object TYPEBOOLEAN extends ComparableToken {
+    override def getType: String = "TYPEBOOLEAN"
+  }
+
+  case object READINPUT extends ComparableToken {
+    override def getType: String = "READINPUT"
+  }
+
+  case object CONST extends ComparableToken {
+    override def getType: String = "CONST"
+  }
+
   case class UnknownToken(name: String) extends TokenType {
     override def getType: String = "UNKNOWN"
 

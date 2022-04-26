@@ -5,10 +5,8 @@ import org.austral.ingsis.printscript.common.TokenType
 
 case class Matches() {
   def getMatches: List[(TokenType, LexerMatcher)] = List(
-    (TokenTypesImpl.LET, LexerMatcherImpl.fromRegex(TokenTypesImpl.LET, "let")),
-    (TokenTypesImpl.PRINTLN, LexerMatcherImpl.fromRegex(TokenTypesImpl.PRINTLN, "println")),
-    (TokenTypesImpl.TYPESTRING, LexerMatcherImpl.fromRegex(TokenTypesImpl.TYPESTRING, "string")),
-    (TokenTypesImpl.TYPENUMBER, LexerMatcherImpl.fromRegex(TokenTypesImpl.TYPENUMBER, "number")),
+    (TokenTypesImpl.OPENBRACE, LexerMatcherImpl.fromRegex(TokenTypesImpl.OPENBRACE, "[{]")),
+    (TokenTypesImpl.CLOSEBRACE, LexerMatcherImpl.fromRegex(TokenTypesImpl.CLOSEBRACE, "[}]")),
     (TokenTypesImpl.PLUS, LexerMatcherImpl.fromRegex(TokenTypesImpl.PLUS, "[+]")),
     (TokenTypesImpl.MINUS, LexerMatcherImpl.fromRegex(TokenTypesImpl.MINUS, "[-]")),
     (TokenTypesImpl.TIMES, LexerMatcherImpl.fromRegex(TokenTypesImpl.TIMES, "[*]")),
@@ -23,8 +21,21 @@ case class Matches() {
     ),
     (
       TokenTypesImpl.IDENTIFIER,
-      LexerMatcherImpl.fromRegex(TokenTypesImpl.IDENTIFIER, "(?:\\b[_a-zA-Z]|\\B\\$)[_\\$a-zA-Z0-9]*+")
+      LexerMatcherImpl.fromRegex(
+        TokenTypesImpl.IDENTIFIER,
+        "(?!(string|number|const|boolean|let|println|true|false|if|else|readInput)\\b)\\b[_a-zA-Z][_a-zA-Z0-9]{0,30}"
+      )
     ),
+    (TokenTypesImpl.TYPESTRING, LexerMatcherImpl.fromRegex(TokenTypesImpl.TYPESTRING, "string")),
+    (TokenTypesImpl.TYPENUMBER, LexerMatcherImpl.fromRegex(TokenTypesImpl.TYPENUMBER, "number")),
+    (TokenTypesImpl.TYPEBOOLEAN, LexerMatcherImpl.fromRegex(TokenTypesImpl.TYPEBOOLEAN, "boolean")),
+    (TokenTypesImpl.IF, LexerMatcherImpl.fromRegex(TokenTypesImpl.IF, "if")),
+    (TokenTypesImpl.ELSE, LexerMatcherImpl.fromRegex(TokenTypesImpl.ELSE, "else")),
+    (TokenTypesImpl.BOOLEAN, LexerMatcherImpl.fromRegex(TokenTypesImpl.BOOLEAN, "(?:true|false)")),
+    (TokenTypesImpl.LET, LexerMatcherImpl.fromRegex(TokenTypesImpl.LET, "let")),
+    (TokenTypesImpl.CONST, LexerMatcherImpl.fromRegex(TokenTypesImpl.CONST, "const")),
+    (TokenTypesImpl.READINPUT, LexerMatcherImpl.fromRegex(TokenTypesImpl.READINPUT, "readInput")),
+    (TokenTypesImpl.PRINTLN, LexerMatcherImpl.fromRegex(TokenTypesImpl.PRINTLN, "println")),
     (TokenTypesImpl.WHITESPACE, LexerMatcherImpl.fromRegex(TokenTypesImpl.WHITESPACE, " ")),
     (TokenTypesImpl.COLON, LexerMatcherImpl.fromRegex(TokenTypesImpl.COLON, "[:]")),
     (TokenTypesImpl.SEMICOLON, LexerMatcherImpl.fromRegex(TokenTypesImpl.SEMICOLON, "[;]")),
