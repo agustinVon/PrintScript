@@ -14,18 +14,22 @@ case class InterpreterImpl() extends Interpreter {
   private var constantValues: Map[String, Option[Any]]         = Map()
   private var validationPhase: Boolean                         = false
   private val operationSolver: OperationSolver                 = OperationSolverImpl()
+  private var displayMethod: DisplayMethod = PrintScriptPrinter()
+  private var inputMethod: InputMethod = PrintScriptInput()
 
 
-  override def interpret(ast: ASTree, displayMethod: (String) => Unit, input: () => String): Unit = {
-    validate(ast, displayMethod)
+  override def interpret(ast: ASTree, displayMethod: DisplayMethod, input: InputMethod): Unit = {
+    this.displayMethod=displayMethod
+    this.inputMethod=input
+    validate(ast)
     variableValues = Map()
-    solveAST(ast, displayMethod)
+    solveAST(ast)
   }
 
-  override def validate(ast: ASTree, displayMethod: (String) => Unit): Unit = {
+  override def validate(ast: ASTree): Unit = {
     validationPhase = true
     variableTypes = Map()
-    solveAST(ast, displayMethod)
+    solveAST(ast)
     validationPhase = false
   }
 
@@ -36,21 +40,37 @@ case class InterpreterImpl() extends Interpreter {
   private def merge(m1:Map[String, Option[Any]], m2:Map[String, Option[Any]]):Map[String, Option[Any]] =
     (m1.keySet ++ m2.keySet).map({ i => (i -> (m1.getOrElse(i, m2.getOrElse(i, None)))) }).toMap
 
-  private def solveAST(ast: ASTree, displayMethod: (String) => Unit): Unit = {
+  private def solveAST(ast: ASTree): Unit = {
     ast match {
       case x: Expression => solveExpression(x)
       case VariableAssignation(variable, _, expression) => solveVariableAssignation(variable, expression)
       case DeclarationAssignation(declaration, _, expression) => solveDeclarationAssignation(declaration, expression)
-      case Root(sentences) => sentences.foreach(t => solveAST(t, displayMethod))
-      case PrintLn(_, expression) => solvePrintLn(expression, displayMethod)
+      case Root(sentences) => sentences.foreach(t => solveAST(t))
+      case PrintLn(_, expression) => solvePrintLn(expression)
       case Declaration(declaration, id, declType) => solveDeclaration(declaration, id, declType)
-      case IfElseCodeBlock(condition, ifCodeBlock, elseCodeBlock) => solveIfElseCodeBlock(condition, ifCodeBlock, elseCodeBlock, displayMethod)
-      case IfCodeBlock(condition, codeBlock) => solveIfElseCodeBlock(condition, codeBlock, null, displayMethod)
-      case ReadInput(function, message) =>
+      case IfElseCodeBlock(condition, ifCodeBlock, elseCodeBlock) => solveIfElseCodeBlock(condition, ifCodeBlock, elseCodeBlock)
+      case IfCodeBlock(condition, codeBlock) => solveIfElseCodeBlock(condition, codeBlock, null)
+      case ReadInput(_, message) => solveReadInput(message)
     }
   }
 
-  private def solveIfElseCodeBlock(condition: BooleanExpression, ifCodeBlock: ASTree, elseCodeBlock: ASTree, displayMethod:(String) => Unit): Unit ={
+  private def solveReadInput(message: Expression): InterpreterResult = {
+    if(validationPhase){
+      Left(STR)
+    }else{
+      val msg = solveExpression(message)
+      msg match {
+        case Right(x:Option[String]) =>
+          displayMethod.display(x.get)
+          inputMethod.readInput() match {
+            case x:String => Right(Some(x))
+            case null => Right(Some("..."))
+          }
+      }
+    }
+  }
+
+  private def solveIfElseCodeBlock(condition: BooleanExpression, ifCodeBlock: ASTree, elseCodeBlock: ASTree): Unit ={
     var line:Int =0
     var column:Int =0
     condition match {
@@ -64,17 +84,17 @@ case class InterpreterImpl() extends Interpreter {
     val exprResult = solveExpression(condition)
     exprResult match {
       case Left(BOOLEAN) =>
-        solveAST(ifCodeBlock, displayMethod)
+        solveAST(ifCodeBlock)
         elseCodeBlock match {
           case null =>
-          case _ => solveAST(elseCodeBlock, displayMethod)
+          case _ => solveAST(elseCodeBlock)
         }
       case Left(_) => throw ConditionalExpectedException(line, column)
       case Right(x) => x.get match {
-        case true => solveAST(ifCodeBlock, displayMethod)
+        case true => solveAST(ifCodeBlock)
         case false => elseCodeBlock match {
           case null =>
-          case _ => solveAST(elseCodeBlock, displayMethod)
+          case _ => solveAST(elseCodeBlock)
         }
         case _ => throw ConditionalExpectedException(line, column)
       }
@@ -109,10 +129,10 @@ case class InterpreterImpl() extends Interpreter {
     }
   }
 
-  private def solvePrintLn(expression: Expression, displayMethod: (String) => Unit): Unit = {
+  private def solvePrintLn(expression: Expression): Unit = {
     solveExpression(expression) match {
       case Left(_)  =>
-      case Right(x) => displayMethod(x.get.toString)
+      case Right(x) => displayMethod.display(x.get.toString)
     }
   }
 
@@ -179,6 +199,7 @@ case class InterpreterImpl() extends Interpreter {
       case LiteralBoolean(value) =>solveLiteralBoolean(value)
       case SumOrMinus(exp1, operator, exp2) => solveOperation(exp1, operator, exp2)
       case TimesOrDiv(exp1, operator, exp2) => solveOperation(exp1, operator, exp2)
+      case ReadInput(_, message) => solveReadInput(message)
     }
   }
 
