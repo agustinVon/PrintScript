@@ -1,5 +1,5 @@
 import exceptions.{ConstantAlreadyDeclaredException, ConstantMustBeInitializedWithValueException, ConstantValueCannotBeModifiedException, InvalidOperationException, TypeMismatchException, VariableAlreadyDeclaredException}
-import interpreter.InterpreterImpl
+import interpreter.{InterpreterImpl, PrintScriptInput, PrintScriptInputTest, PrintScriptPrinter}
 import lexer.LexerImpl
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -16,7 +16,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == 8)
   }
 
@@ -26,7 +26,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == "testing")
   }
 
@@ -38,7 +38,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("z").get == "hello world")
   }
 
@@ -51,7 +51,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("z").get == "num 10")
   }
 
@@ -62,7 +62,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == 7)
   }
 
@@ -72,7 +72,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == 3)
   }
 
@@ -82,7 +82,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == 10)
   }
 
@@ -92,7 +92,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == 5)
   }
 
@@ -102,7 +102,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, println))
+    assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
   }
 
   @Test
@@ -111,7 +111,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, println))
+    assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
   }
 
   @Test
@@ -120,7 +120,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, println))
+    assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
   }
 
   @Test
@@ -129,7 +129,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, println))
+    assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
   }
 
   @Test
@@ -138,7 +138,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, println))
+    assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
   }
 
   @Test
@@ -147,7 +147,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, println))
+    assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
   }
 
   @Test
@@ -156,7 +156,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, println))
+    assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
   }
 
   @Test
@@ -165,7 +165,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, println))
+    assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
   }
 
   @Test
@@ -174,7 +174,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, println))
+    assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
   }
 
   @Test
@@ -183,7 +183,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    assertThrows(classOf[TypeMismatchException], () => interpreter.interpret(ast, println))
+    assertThrows(classOf[TypeMismatchException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
   }
 
   @Test
@@ -192,7 +192,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    assertThrows(classOf[TypeMismatchException], () => interpreter.interpret(ast, println))
+    assertThrows(classOf[TypeMismatchException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
   }
 
   @Test
@@ -202,7 +202,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(true)
   }
 
@@ -213,7 +213,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == 2)
   }
 
@@ -224,7 +224,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == "hello world")
   }
 
@@ -235,7 +235,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("y").get == 5)
   }
 
@@ -246,7 +246,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == true)
   }
 
@@ -256,7 +256,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == "esta es una oracion con .")
   }
 
@@ -266,7 +266,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == 1)
   }
 
@@ -276,7 +276,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == 1.0)
   }
 
@@ -286,7 +286,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == "test 1")
   }
 
@@ -296,7 +296,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == "test 1.0")
   }
 
@@ -306,7 +306,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == 7.5)
   }
 
@@ -316,7 +316,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == 1.5)
   }
 
@@ -326,7 +326,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == 9)
   }
 
@@ -336,7 +336,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == 6.25)
   }
 
@@ -346,7 +346,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == 4.5)
   }
 
@@ -356,7 +356,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == 0.5)
   }
 
@@ -366,7 +366,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == 5)
   }
 
@@ -376,7 +376,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == 4)
   }
 
@@ -386,7 +386,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == 5)
   }
 
@@ -396,7 +396,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == 3)
   }
 
@@ -406,7 +406,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == 0.75)
   }
 
@@ -416,7 +416,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == 5)
   }
 
@@ -426,7 +426,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("x").get == "2.5 test")
   }
 
@@ -436,7 +436,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("numberMy").get == "test 2.5")
   }
 
@@ -446,7 +446,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("numberMy").get == 2)
   }
 
@@ -460,7 +460,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("numberMy").get == 3)
   }
 
@@ -475,7 +475,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("numberMy").get == 5)
   }
 
@@ -485,7 +485,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("numberMy").get == 2)
   }
 
@@ -495,7 +495,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    assertThrows(classOf[ConstantMustBeInitializedWithValueException], () => interpreter.interpret(ast, println))
+    assertThrows(classOf[ConstantMustBeInitializedWithValueException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
   }
 
   @Test
@@ -505,7 +505,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    assertThrows(classOf[ConstantValueCannotBeModifiedException], () => interpreter.interpret(ast, println))
+    assertThrows(classOf[ConstantValueCannotBeModifiedException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
   }
 
   @Test
@@ -515,7 +515,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    assertThrows(classOf[ConstantAlreadyDeclaredException], () => interpreter.interpret(ast, println))
+    assertThrows(classOf[ConstantAlreadyDeclaredException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
   }
 
   @Test
@@ -525,7 +525,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    assertThrows(classOf[VariableAlreadyDeclaredException], () => interpreter.interpret(ast, println))
+    assertThrows(classOf[VariableAlreadyDeclaredException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
   }
 
   @Test
@@ -535,7 +535,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    assertThrows(classOf[VariableAlreadyDeclaredException], () => interpreter.interpret(ast, println))
+    assertThrows(classOf[VariableAlreadyDeclaredException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
   }
 
   @Test
@@ -545,7 +545,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    assertThrows(classOf[ConstantAlreadyDeclaredException], () => interpreter.interpret(ast, println))
+    assertThrows(classOf[ConstantAlreadyDeclaredException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
   }
 
   @Test
@@ -555,7 +555,7 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("constNumber").get == 4)
   }
 
@@ -566,8 +566,47 @@ class InterpreterSuite {
     val tokens = LexerImpl().lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
-    interpreter.interpret(ast, println)
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
     assert(interpreter.getMemory()("variableNumber").get == 4)
+  }
+
+  @Test
+  def ifTestWithBooleanVariable(): Unit = {
+    val content = "const value: boolean = true;" +
+      "let result: string;" +
+      "if(value){" +
+      "result = \"success\" ;" +
+      "}else{" +
+      "result = \"failure\" ;" +
+      "};"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
+    assert(interpreter.getMemory()("result").get.equals("success"))
+  }
+
+  @Test
+  def readInputFromConst(): Unit = {
+    val content = "const hint: string = \"ingrese un texto\";"+
+      "const myText: string = readInput(hint);" +
+      "println(myText);"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInputTest("TextInputResult"))
+    assert(interpreter.getMemory()("myText").get.equals("TextInputResult"))
+  }
+
+  @Test
+  def readInput(): Unit = {
+    val content = "const myText: string = readInput(\"ingrese un texto\");" +
+      "println(myText);"
+    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInputTest("TextInputResult"))
+    assert(interpreter.getMemory()("myText").get.equals("TextInputResult"))
   }
 
 }
