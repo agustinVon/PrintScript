@@ -32,11 +32,19 @@ object App {
         case e: ExpressionExpectedException =>
           println("ERROR\ncolumn: " + e.position + " line: " + e.line)
           println(e.getMessage)
+        case e: Exception =>
+          println(e.getMessage)
       }
     }
 
     if (option == 2) {
-      validate(FileProgramSource(path), println)
+      try {
+        validate(FileProgramSource(path), println)
+      } catch {
+        case e:Exception =>
+          println("Validation failed")
+          println(e.getMessage)
+      }
     }
   }
 
