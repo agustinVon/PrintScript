@@ -33,7 +33,7 @@ object App {
           println("ERROR\ncolumn: " + e.position + " line: " + e.line)
           println(e.getMessage)
         case e: Exception =>
-          println(e.getMessage)
+          println(e.getMessage, e.toString)
       }
     }
 
@@ -43,7 +43,7 @@ object App {
       } catch {
         case e:Exception =>
           println("Validation failed")
-          println(e.getMessage)
+          println(e.getMessage, e.toString)
       }
     }
   }
