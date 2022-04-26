@@ -633,4 +633,33 @@ class ParserSuite  {
     }
   }
 
+  @Test
+  def parserShouldBeAbleToParseReadInputAsValue(): Unit = {
+    val content = "let a:string = readInput(\"test\");"
+    val lexer = LexerImpl()
+    val tokens = lexer.lex(StringProgramSource(content))
+    val parser = ParserImpl()
+
+    val ast = parser.parse(StringProgramSource(content), tokens)
+
+    ast match {
+      case Root(sentences) =>
+        sentences.head match {
+          case DeclarationAssignation(_, _, expression) =>
+            expression match {
+              case ReadInput(_, message) =>
+                message match {
+                  case LiteralString(value) =>
+                    assert(value.component1().equals("test"))
+                  case _ => assert(false)
+                }
+              case _ => assert(false)
+            }
+          case _ => assert(false)
+        }
+      case _ => assert(false)
+    }
+    assert(true)
+  }
+
 }

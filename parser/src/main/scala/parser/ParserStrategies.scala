@@ -122,7 +122,7 @@ object ParserStrategies {
       }
     }
 
-    override def canBeParsed(consumer: TokenConsumer): Boolean = LiteralParser.canBeParsed(consumer) || VariableParser.canBeParsed(consumer) || ParenParser.canBeParsed(consumer)
+    override def canBeParsed(consumer: TokenConsumer): Boolean = LiteralParser.canBeParsed(consumer) || VariableParser.canBeParsed(consumer) || ParenParser.canBeParsed(consumer) || ReadInputParser.canBeParsed(consumer)
   }
 
   case object VariableParser extends SectionParser() {
