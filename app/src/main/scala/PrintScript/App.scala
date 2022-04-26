@@ -41,7 +41,7 @@ object App {
       try {
         validate(FileProgramSource(path), println)
       } catch {
-        case e:Exception =>
+        case e: Exception =>
           println("Validation failed")
           println(e.getMessage, e.toString)
       }

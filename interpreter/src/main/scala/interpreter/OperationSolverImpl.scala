@@ -29,15 +29,16 @@ case class OperationSolverImpl() extends OperationSolver {
   ) = {
     (expr1, expr2) match {
       case (Left(NUM), Left(NUM))                           => Left(NUM)
-      case (Left(_), Left(STR))                           => Left(STR)
-      case (Left(STR), Left(_))                           => Left(STR)
+      case (Left(_), Left(STR))                             => Left(STR)
+      case (Left(STR), Left(_))                             => Left(STR)
       case (Right(Some(x: Double)), Right(Some(y: Double))) => Right(Some(x + y))
       case (Right(Some(x: Int)), Right(Some(y: Int)))       => Right(Some(x + y))
       case (Right(Some(x: Double)), Right(Some(y: Int)))    => Right(Some(x + y))
       case (Right(Some(x: Int)), Right(Some(y: Double)))    => Right(Some(x + y))
-      case (Right(Some(x: String)), Right(Some(y))) => Right(Some(x + y.toString))
-      case (Right(Some(x)), Right(Some(y: String)))    => Right(Some(x.toString + y))
-      case _ => throw InvalidOperationException(line, column, "sum operation not implemented for the provided data types")
+      case (Right(Some(x: String)), Right(Some(y)))         => Right(Some(x + y.toString))
+      case (Right(Some(x)), Right(Some(y: String)))         => Right(Some(x.toString + y))
+      case _ =>
+        throw InvalidOperationException(line, column, "sum operation not implemented for the provided data types")
     }
   }
 
@@ -48,12 +49,17 @@ case class OperationSolverImpl() extends OperationSolver {
       column: Int
   ) = {
     (expr1, expr2) match {
-      case (Left(NUM), Left(NUM)) => Left(NUM)
+      case (Left(NUM), Left(NUM))                           => Left(NUM)
       case (Right(Some(x: Double)), Right(Some(y: Double))) => Right(Some(x - y))
       case (Right(Some(x: Int)), Right(Some(y: Int)))       => Right(Some(x - y))
       case (Right(Some(x: Double)), Right(Some(y: Int)))    => Right(Some(x - y))
       case (Right(Some(x: Int)), Right(Some(y: Double)))    => Right(Some(x - y))
-      case _ => throw InvalidOperationException(line, column, "substraction operation not implemented for the provided data types")
+      case _ =>
+        throw InvalidOperationException(
+          line,
+          column,
+          "substraction operation not implemented for the provided data types"
+        )
     }
   }
 
@@ -64,12 +70,17 @@ case class OperationSolverImpl() extends OperationSolver {
       column: Int
   ) = {
     (expr1, expr2) match {
-      case (Left(NUM), Left(NUM)) => Left(NUM)
+      case (Left(NUM), Left(NUM))                           => Left(NUM)
       case (Right(Some(x: Double)), Right(Some(y: Double))) => Right(Some(x * y))
       case (Right(Some(x: Int)), Right(Some(y: Int)))       => Right(Some(x * y))
       case (Right(Some(x: Double)), Right(Some(y: Int)))    => Right(Some(x * y))
       case (Right(Some(x: Int)), Right(Some(y: Double)))    => Right(Some(x * y))
-      case _ => throw InvalidOperationException(line, column, "multiplication operation not implemented for the provided data types")
+      case _ =>
+        throw InvalidOperationException(
+          line,
+          column,
+          "multiplication operation not implemented for the provided data types"
+        )
     }
   }
 
@@ -80,12 +91,13 @@ case class OperationSolverImpl() extends OperationSolver {
       column: Int
   ) = {
     (expr1, expr2) match {
-      case (Left(NUM), Left(NUM)) => Left(NUM)
+      case (Left(NUM), Left(NUM))                           => Left(NUM)
       case (Right(Some(x: Double)), Right(Some(y: Double))) => Right(Some(x / y))
       case (Right(Some(x: Int)), Right(Some(y: Int)))       => Right(Some(x / y))
       case (Right(Some(x: Double)), Right(Some(y: Int)))    => Right(Some(x / y))
       case (Right(Some(x: Int)), Right(Some(y: Double)))    => Right(Some(x / y))
-      case _ => throw InvalidOperationException(line, column, "division operation not implemented for the provided data types")
+      case _ =>
+        throw InvalidOperationException(line, column, "division operation not implemented for the provided data types")
 
     }
   }
