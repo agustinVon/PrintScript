@@ -6,11 +6,20 @@ import interpreter.{InterpreterImpl, PrintScriptInput, PrintScriptPrinter}
 import lexer.LexerImpl
 import parser.ParserImpl
 import parser.exceptions.{ExpectedEndOfLineException, ExpressionExpectedException}
-import sources.{FileProgramSource, StringProgramSource}
+import sources.FileProgramSource
 
-import scala.annotation.tailrec
-import scala.io.{BufferedSource, Source}
-import scala.util.{Failure, Success, Using}
+class JavaApp {
+  def interpret(source: FileProgramSource): String = {
+    object result {
+      var messages:String = ""
+      def addValue(str:String):Unit = {
+        messages = messages.concat(str)
+      }
+    }
+    App.interpret(source, result.addValue)
+    result.messages
+  }
+}
 
 object App {
   private val lexer       = LexerImpl()

@@ -1,7 +1,6 @@
 package interpreter
 
-import exceptions.InvalidOperationException
-import interpreter.ExpressionResultType.{ExpressionResultType, NUM, STR}
+import interpreter.ExpressionResultType.ExpressionResultType
 import org.austral.ingsis.printscript.parser.Content
 
 trait OperationSolver {

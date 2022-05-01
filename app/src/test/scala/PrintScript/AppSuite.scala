@@ -3,13 +3,7 @@
  */
 package PrintScript
 
-import lexer._
-import parser._
-import interpreter._
-import org.junit.jupiter.api.Test
-import sources.StringProgramSource
 
-import scala.jdk.CollectionConverters._
 
 class AppSuite{
 }

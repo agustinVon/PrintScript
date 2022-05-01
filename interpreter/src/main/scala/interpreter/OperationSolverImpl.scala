@@ -1,7 +1,7 @@
 package interpreter
 
 import exceptions.InvalidOperationException
-import interpreter.ExpressionResultType.{BOOLEAN, ExpressionResultType, NUM, STR}
+import interpreter.ExpressionResultType.{ExpressionResultType, NUM, STR}
 import org.austral.ingsis.printscript.parser.Content
 
 case class OperationSolverImpl() extends OperationSolver {

@@ -1,8 +1,8 @@
-import ast.{Declaration, DeclarationAssignation, Expression, IfCodeBlock, IfElseCodeBlock, LiteralBoolean, LiteralNumber, LiteralString, ParenExpression, PrintLn, ReadInput, Root, SumOrMinus, TimesOrDiv, Variable, VariableAssignation}
+import ast.{Declaration, DeclarationAssignation, IfCodeBlock, IfElseCodeBlock, LiteralBoolean, LiteralNumber, LiteralString, ParenExpression, PrintLn, ReadInput, Root, SumOrMinus, TimesOrDiv, Variable, VariableAssignation}
 import lexer.LexerImpl
 import org.austral.ingsis.printscript.parser.TokenIterator
 import org.junit.jupiter.api.Assertions.{assertFalse, assertThrows}
-import org.junit.jupiter.api.{DisplayName, Nested, Test}
+import org.junit.jupiter.api.Test
 import parser.ParserStrategies.{DeclarationParser, ExpressionParser, IfParser, LiteralParser, PrintLnParser, ReadInputParser, VariableParser}
 import parser.exceptions.{ExpressionExpectedException, NoStrategyException, NotABooleanExpressionException}
 import parser.{ParserImpl, TokenConsumerImpl}
@@ -68,12 +68,12 @@ class ParserSuite  {
     expression match {
       case ParenExpression(expression) =>
         expression match {
-          case TimesOrDiv(exp1, operator, exp2) =>
+          case TimesOrDiv(exp1, operator, _) =>
             assert(operator.component1().equals("*"))
             exp1 match {
               case ParenExpression(expression) => {
                 expression match {
-                  case SumOrMinus(exp1, operator, exp2) =>
+                  case SumOrMinus(_, operator, _) =>
                     assert(operator.component1().equals("+"))
                 }
               }
@@ -239,7 +239,7 @@ class ParserSuite  {
             }
         }
         sentences(1) match {
-          case VariableAssignation(variable, assignation, expression) =>
+          case VariableAssignation(variable, _, expression) =>
             assert(variable.value.component1().equals("a"))
             expression match {
               case LiteralString(value) => assert(value.component1().equals("hello world"))
@@ -419,11 +419,11 @@ class ParserSuite  {
     val sum = ExpressionParser.parse(consumer)
 
     sum match {
-      case SumOrMinus(exp1, operator, exp2) =>
+      case SumOrMinus(exp1, _, exp2) =>
         exp1 match {
-          case SumOrMinus(exp1, operator, exp2) =>
+          case SumOrMinus(exp1, _, exp2) =>
             exp1 match {
-              case TimesOrDiv(exp1, operator, exp2) =>
+              case TimesOrDiv(exp1, _, exp2) =>
                 exp1 match {
                   case LiteralNumber(value) => value.component1() == 2
                   case _ => assert(false)
@@ -435,7 +435,7 @@ class ParserSuite  {
               case _ => assert(false)
             }
             exp2 match {
-              case TimesOrDiv(exp1, operator, exp2) =>
+              case TimesOrDiv(exp1, _, exp2) =>
                 exp1 match {
                   case LiteralNumber(value) => value.component1() == 8
                   case _ => assert(false)
@@ -493,7 +493,7 @@ class ParserSuite  {
     val declaration = DeclarationParser.parse(consumer)
 
     declaration match {
-      case DeclarationAssignation(declaration, assignation, expression) =>
+      case DeclarationAssignation(declaration, _, expression) =>
         assert(declaration.declType.component1().equals("boolean"))
         expression match {
           case LiteralBoolean(value) => assertFalse(value.component1())

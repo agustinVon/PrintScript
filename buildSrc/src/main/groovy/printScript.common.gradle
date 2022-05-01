@@ -2,6 +2,10 @@ plugins {
     id 'scala'
     id 'application'
     id "org.scoverage"
+    id 'io.github.cosmicsilence.scalafix'
+    //id 'com.sksamuel.scapegoat'
+    //id 'scalaStyle'
+    //id 'com.github.eugenesy.scapegoat'
     id 'maven-publish'
 }
 
@@ -24,8 +28,8 @@ publishing {
             name = "GitHubPackages"
             url = "https://maven.pkg.github.com/agustinVon/PrintScript"
             credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+                password = project.findProperty("gpr.key") ?:System.getenv("GITHUB_TOKEN")
             }
         }
     }
@@ -50,6 +54,11 @@ dependencies {
     // Need scala-xml at test runtime
     testRuntimeOnly 'org.scala-lang.modules:scala-xml_2.13:1.2.0'
     implementation 'org.austral.ingsis.printscript:printscript-parser-common:0.1.5'
+
+}
+
+tasks.withType(ScalaCompile) {
+    scalaCompileOptions.additionalParameters = ["-Wunused"]
 }
 
 test {
@@ -60,4 +69,14 @@ test {
 scoverage {
     minimumRate = 0.85
 }
+
+scalafix {
+    //configFile = file(".scalafix.conf")
+    //includes = ["/src/main/scala/**/*.scala"]
+    excludes = ["/build/**"]
+    ignoreSourceSets = ["scoverage"]
+}
+
+
+
 
