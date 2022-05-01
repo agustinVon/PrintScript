@@ -9,7 +9,7 @@ dependencies {
     implementation project(':commons')
 }
 
-version '1.1.1'
+version '1.1.2'
 
 build.dependsOn(checkScoverage)
 build.dependsOn(checkScalafmt)
