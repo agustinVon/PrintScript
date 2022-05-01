@@ -4,7 +4,7 @@ import tokens.TokenTypesImpl
 import org.austral.ingsis.printscript.common.{LexicalRange, Token, TokenType}
 import sources.ProgramSource
 
-import java.util.regex.{MatchResult, Matcher}
+import java.util.regex.Matcher
 
 case class LexerImpl() extends Lexer {
 

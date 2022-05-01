@@ -6,11 +6,7 @@ import interpreter.{InterpreterImpl, PrintScriptInput, PrintScriptPrinter}
 import lexer.LexerImpl
 import parser.ParserImpl
 import parser.exceptions.{ExpectedEndOfLineException, ExpressionExpectedException}
-import sources.{FileProgramSource, StringProgramSource}
-
-import scala.annotation.tailrec
-import scala.io.{BufferedSource, Source}
-import scala.util.{Failure, Success, Using}
+import sources.FileProgramSource
 
 class JavaApp {
   def interpret(source: FileProgramSource): String = {
