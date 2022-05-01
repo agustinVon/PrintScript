@@ -1,6 +1,6 @@
 package sources
 
-import scala.io.{BufferedSource, Source}
+import scala.io.Source
 import scala.util.{Failure, Success, Using}
 
 case class FileProgramSource(path: String) extends ProgramSource {

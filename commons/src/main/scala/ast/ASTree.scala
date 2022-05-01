@@ -1,6 +1,5 @@
 package ast
 
-import org.austral.ingsis.printscript.common.TokenType
 import org.austral.ingsis.printscript.parser.Content
 
 sealed trait ASTree

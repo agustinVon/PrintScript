@@ -26,7 +26,6 @@ import exceptions.{
   ConstantAlreadyDeclaredException,
   ConstantMustBeInitializedWithValueException,
   ConstantValueCannotBeModifiedException,
-  InvalidOperationException,
   TypeMismatchException,
   VariableAlreadyDeclaredException,
   VariableNotDeclaredException
@@ -75,8 +74,8 @@ case class InterpreterImpl() extends Interpreter {
       case PrintLn(_, expression)                             => solvePrintLn(expression)
       case Declaration(declaration, id, declType)             => solveDeclaration(declaration, id, declType)
       case IfElseCodeBlock(condition, ifCodeBlock, elseCodeBlock) =>
-        solveIfElseCodeBlock(condition, ifCodeBlock, elseCodeBlock)
-      case IfCodeBlock(condition, codeBlock) => solveIfElseCodeBlock(condition, codeBlock, null)
+        solveIfElseCodeBlock(condition, ifCodeBlock, Some(elseCodeBlock))
+      case IfCodeBlock(condition, codeBlock) => solveIfElseCodeBlock(condition, codeBlock, None)
       case ReadInput(_, message)             => solveReadInput(message)
     }
   }
@@ -91,13 +90,17 @@ case class InterpreterImpl() extends Interpreter {
           displayMethod.display(x.get)
           inputMethod.readInput() match {
             case x: String => Right(Some(x))
-            case null      => Right(Some("..."))
+            case _         => Right(Some("..."))
           }
       }
     }
   }
 
-  private def solveIfElseCodeBlock(condition: BooleanExpression, ifCodeBlock: ASTree, elseCodeBlock: ASTree): Unit = {
+  private def solveIfElseCodeBlock(
+      condition: BooleanExpression,
+      ifCodeBlock: ASTree,
+      elseCodeBlock: Option[ASTree]
+  ): Unit = {
     var line: Int   = 0
     var column: Int = 0
     condition match {
@@ -113,8 +116,8 @@ case class InterpreterImpl() extends Interpreter {
       case Left(BOOLEAN) =>
         solveAST(ifCodeBlock)
         elseCodeBlock match {
-          case null =>
-          case _    => solveAST(elseCodeBlock)
+          case None =>
+          case _    => solveAST(elseCodeBlock.get)
         }
       case Left(_) => throw ConditionalExpectedException(line, column)
       case Right(x) =>
@@ -122,8 +125,8 @@ case class InterpreterImpl() extends Interpreter {
           case true => solveAST(ifCodeBlock)
           case false =>
             elseCodeBlock match {
-              case null =>
-              case _    => solveAST(elseCodeBlock)
+              case None =>
+              case _    => solveAST(elseCodeBlock.get)
             }
           case _ => throw ConditionalExpectedException(line, column)
         }
@@ -132,7 +135,7 @@ case class InterpreterImpl() extends Interpreter {
   }
 
   private def solveDeclaration(declaration: Content[String], id: Content[String], declType: Content[String]): Unit = {
-    if (declaration.getContent.equals("const")) {
+    if (validationPhase && declaration.getContent.equals("const")) {
       throw ConstantMustBeInitializedWithValueException(
         declaration.getToken.component4().getStartLine,
         declaration.getToken.component4().getStartCol

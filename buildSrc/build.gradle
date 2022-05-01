@@ -6,6 +6,7 @@ plugins {
 repositories {
     maven {
         url = uri('https://repo.grails.org/artifactory/core')
+        //url = uri("https://plugins.gradle.org/m2/")
     }
     mavenCentral()
     gradlePluginPortal()
@@ -14,4 +15,15 @@ repositories {
 dependencies {
     // https://mvnrepository.com/artifact/org.scoverage/gradle-scoverage
     implementation 'org.scoverage:gradle-scoverage:7.0.0'
+    // https://mvnrepository.com/artifact/com.github.alisiikh/gradle-scalastyle-plugin
+    //implementation 'com.github.eugenesy.scapegoat:gradle-scapegoat-plugin:0.2.0'
+    //implementation 'org.github.ngbinh.scalastyle:gradle-scalastyle-plugin_2.11:1.0.1'
+    // https://mvnrepository.com/artifact/com.sksamuel.scapegoat/scalac-scapegoat-plugin
+    //implementation 'com.sksamuel.scapegoat:scalac-scapegoat-plugin_2.13.6:1.4.11'
+
+    // https://mvnrepository.com/artifact/org.wartremover/wartremover
+    //implementation 'org.wartremover:wartremover_2.13.6:3.0.2'
+    implementation 'io.github.cosmicsilence:gradle-scalafix:0.1.13'
+
+
 }

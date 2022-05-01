@@ -20,7 +20,7 @@ import ast.{
   Variable,
   VariableAssignation
 }
-import org.austral.ingsis.printscript.common.{IntRead, Read, StringRead, TokenConsumer}
+import org.austral.ingsis.printscript.common.{Read, StringRead, TokenConsumer}
 import parser.exceptions.{ExpressionExpectedException, NotABooleanExpressionException}
 import parser.traits.{ExpressionSectionParser, SectionParser}
 import tokens.TokenTypesImpl
