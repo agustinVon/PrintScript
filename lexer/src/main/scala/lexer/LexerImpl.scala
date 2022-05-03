@@ -1,12 +1,13 @@
 package lexer
 
+import exceptions.UnsupportedFeatureException
 import tokens.TokenTypesImpl
 import org.austral.ingsis.printscript.common.{LexicalRange, Token, TokenType}
 import sources.ProgramSource
 
 import java.util.regex.Matcher
 
-case class LexerImpl() extends Lexer {
+case class LexerImpl(version: String) extends Lexer {
 
   type MatchResult           = (String, Option[TokenType])
   type TokenGenerationResult = (Option[Token], Int, Int, Int)
@@ -26,7 +27,8 @@ case class LexerImpl() extends Lexer {
     var line, position, column = 0
     while (matcher.find()) {
       val matchResult: MatchResult = getMatchResult(matcher)
-      val (token, l, p, c)         = createTokenFromMatchResult(matchResult: MatchResult, line: Int, position: Int, column: Int)
+      checkVersionSupported(matchResult, line, column)
+      val (token, l, p, c) = createTokenFromMatchResult(matchResult: MatchResult, line: Int, position: Int, column: Int)
       token match {
         case Some(x) => tokens = tokens :+ x
         case None    =>
@@ -36,6 +38,28 @@ case class LexerImpl() extends Lexer {
       column = c
     }
     tokens :+ new Token(TokenTypesImpl.EOF, position, position, new LexicalRange(column, line, column, line))
+  }
+
+  private def checkVersionSupported(matchResult: MatchResult, line: Int, column: Int): Unit = {
+    version match {
+      case "1.0" =>
+        matchResult._2 match {
+          case Some(TokenTypesImpl.IF)          => throwUnsupportedFeatureException(line, column)
+          case Some(TokenTypesImpl.CONST)       => throwUnsupportedFeatureException(line, column)
+          case Some(TokenTypesImpl.CLOSEBRACE)  => throwUnsupportedFeatureException(line, column)
+          case Some(TokenTypesImpl.OPENBRACE)   => throwUnsupportedFeatureException(line, column)
+          case Some(TokenTypesImpl.BOOLEAN)     => throwUnsupportedFeatureException(line, column)
+          case Some(TokenTypesImpl.TYPEBOOLEAN) => throwUnsupportedFeatureException(line, column)
+          case Some(TokenTypesImpl.ELSE)        => throwUnsupportedFeatureException(line, column)
+          case Some(TokenTypesImpl.READINPUT)   => throwUnsupportedFeatureException(line, column)
+        }
+      case "1.1" =>
+      case _     => throwUnsupportedFeatureException(line, column)
+    }
+  }
+
+  private def throwUnsupportedFeatureException(line: Int, column: Int): Unit = {
+    throw UnsupportedFeatureException(line, column);
   }
 
   private def getMatchResult(matcher: Matcher): MatchResult = {

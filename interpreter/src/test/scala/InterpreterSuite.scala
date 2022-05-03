@@ -74,7 +74,7 @@ class InterpreterSuite {
   @Test
   def aNumberAndAStringShouldNotBeAbleToSubstract(): Unit = {
     val content = "let x: number = 10 - \"test\";"
-    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val tokens = LexerImpl("1.1").lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
     assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
@@ -83,7 +83,7 @@ class InterpreterSuite {
   @Test
   def aNumberAndAStringShouldNotBeAbleToDivide(): Unit = {
     val content = "let x: number = 10 / \"test\";"
-    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val tokens = LexerImpl("1.1").lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
     assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
@@ -92,7 +92,7 @@ class InterpreterSuite {
   @Test
   def aNumberAndAStringShouldNotBeAbleToMultiply(): Unit = {
     val content = "let x: number = 10 * \"test\";"
-    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val tokens = LexerImpl("1.1").lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
     assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
@@ -101,7 +101,7 @@ class InterpreterSuite {
   @Test
   def aStringAndANumberShouldNotBeAbleToSubstract(): Unit = {
     val content = "let x: number = \"test\" - 10;"
-    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val tokens = LexerImpl("1.1").lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
     assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
@@ -110,7 +110,7 @@ class InterpreterSuite {
   @Test
   def aStringAndANumberShouldNotBeAbleToDivide(): Unit = {
     val content = "let x: number = \"test\" / 10;"
-    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val tokens = LexerImpl("1.1").lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
     assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
@@ -119,7 +119,7 @@ class InterpreterSuite {
   @Test
   def aStringAndANumberShouldNotBeAbleToMultiply(): Unit = {
     val content = "let x: number = \"test\" * 10;"
-    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val tokens = LexerImpl("1.1").lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
     assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
@@ -128,7 +128,7 @@ class InterpreterSuite {
   @Test
   def twoStringsShouldNotBeAbleToMultiply(): Unit = {
     val content = "let x: number = \"test\" * \"error\";"
-    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val tokens = LexerImpl("1.1").lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
     assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
@@ -137,7 +137,7 @@ class InterpreterSuite {
   @Test
   def twoStringsShouldNotBeAbleToSubstract(): Unit = {
     val content = "let x: number = \"test\" - \"error\";"
-    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val tokens = LexerImpl("1.1").lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
     assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
@@ -146,7 +146,7 @@ class InterpreterSuite {
   @Test
   def twoStringsShouldNotBeAbleToDivide(): Unit = {
     val content = "let x: number = \"test\" / \"error\";"
-    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val tokens = LexerImpl("1.1").lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
     assertThrows(classOf[InvalidOperationException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
@@ -155,7 +155,7 @@ class InterpreterSuite {
   @Test
   def stringAssignationShouldNotBeAbleToStoreANumber(): Unit = {
     val content = "let x: string = 5;"
-    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val tokens = LexerImpl("1.1").lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
     assertThrows(classOf[TypeMismatchException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
@@ -164,7 +164,7 @@ class InterpreterSuite {
   @Test
   def numberAssignationShouldNotBeAbleToStoreAString(): Unit = {
     val content = "let x: number = \"test\";"
-    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val tokens = LexerImpl("1.1").lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
     assertThrows(classOf[TypeMismatchException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
@@ -362,7 +362,7 @@ class InterpreterSuite {
   }
 
   private def testInitializer(content: String) = {
-    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val tokens = LexerImpl("1.1").lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
     interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput())
@@ -391,7 +391,7 @@ class InterpreterSuite {
   @Test
   def constAsignationWithoutValueShouldRaiseError(): Unit = {
     val content = "const numberMy: number;"
-    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val tokens = LexerImpl("1.1").lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
     assertThrows(classOf[ConstantMustBeInitializedWithValueException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
@@ -401,7 +401,7 @@ class InterpreterSuite {
   def constShouldRaiseErrorWhenTriedToModifyValue(): Unit = {
     val content = "const numberMy: number = 4;" +
       "numberMy = 5;"
-    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val tokens = LexerImpl("1.1").lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
     assertThrows(classOf[ConstantValueCannotBeModifiedException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
@@ -411,7 +411,7 @@ class InterpreterSuite {
   def variableAssignationShouldRaiseAnErrorWhenConstWithSameIdentifierWasPreviouslyInitialized(): Unit = {
     val content = "const numberMy: number = 4;" +
       "let numberMy:number = 5;"
-    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val tokens = LexerImpl("1.1").lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
     assertThrows(classOf[ConstantAlreadyDeclaredException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
@@ -421,7 +421,7 @@ class InterpreterSuite {
   def constAssignationShouldRaiseAnErrorWhenVariableWithSameIdentifierWasPreviouslyInitialized(): Unit = {
     val content = "let numberMy: number = 4;" +
       "const numberMy:number = 5;"
-    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val tokens = LexerImpl("1.1").lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
     assertThrows(classOf[VariableAlreadyDeclaredException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
@@ -431,7 +431,7 @@ class InterpreterSuite {
   def variableAssignationShouldRaiseAnErrorWhenVariableWithSameIdentifierWasPreviouslyInitialized(): Unit = {
     val content = "let numberMy: number = 4;" +
       "let numberMy:number = 5;"
-    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val tokens = LexerImpl("1.1").lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
     assertThrows(classOf[VariableAlreadyDeclaredException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
@@ -441,7 +441,7 @@ class InterpreterSuite {
   def constAssignationShouldRaiseAnErrorWhenConstWithSameIdentifierWasPreviouslyInitialized(): Unit = {
     val content = "const numberMy: number = 4;" +
       "const numberMy:number = 5;"
-    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val tokens = LexerImpl("1.1").lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
     assertThrows(classOf[ConstantAlreadyDeclaredException], () => interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInput()))
@@ -481,7 +481,7 @@ class InterpreterSuite {
     val content = "const hint: string = \"ingrese un texto\";"+
       "const myText: string = readInput(hint);" +
       "println(myText);"
-    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val tokens = LexerImpl("1.1").lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
     interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInputTest("TextInputResult"))
@@ -492,7 +492,7 @@ class InterpreterSuite {
   def readInput(): Unit = {
     val content = "const myText: string = readInput(\"ingrese un texto\");" +
       "println(myText);"
-    val tokens = LexerImpl().lex(StringProgramSource(content))
+    val tokens = LexerImpl("1.1").lex(StringProgramSource(content))
     val ast = ParserImpl().parse(StringProgramSource(content), tokens)
     val interpreter = InterpreterImpl()
     interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInputTest("TextInputResult"))

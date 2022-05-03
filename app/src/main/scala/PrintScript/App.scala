@@ -9,7 +9,7 @@ import parser.exceptions.{ExpectedEndOfLineException, ExpressionExpectedExceptio
 import sources.FileProgramSource
 
 object App {
-  private val lexer       = LexerImpl()
+  private val lexer       = LexerImpl("1.1")
   private val parser      = ParserImpl()
   private val interpreter = InterpreterImpl()
 
