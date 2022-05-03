@@ -60,4 +60,12 @@ class LexerSuite {
       && tokens(7).getType == TokenTypesImpl.EOF)
   }
 
+  @Test
+  def stringsShouldBeAbleToContainColon():Unit = {
+    val source = StringProgramSource("\"test:test\"")
+    val tokens:List[Token] = LexerImpl().lex(source)
+    assert(tokens.length == 2)
+    assert(tokens.head.getType.equals(TokenTypesImpl.STRING))
+  }
+
 }

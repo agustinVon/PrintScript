@@ -356,7 +356,7 @@ class InterpreterSuite {
       "let value: boolean = true;" +
       "if (true){" +
       "numberMy = 3;" +
-      "};"
+      "}"
     val interpreter: InterpreterImpl = testInitializer(content)
     assert(interpreter.getMemory()("numberMy").get == 3)
   }
@@ -376,7 +376,7 @@ class InterpreterSuite {
       "if (false){" +
       "numberMy = 3;" +
       "}else{" +
-      "numberMy = 5;};"
+      "numberMy = 5;}"
     val interpreter: InterpreterImpl = testInitializer(content)
     assert(interpreter.getMemory()("numberMy").get == 5)
   }
@@ -471,7 +471,7 @@ class InterpreterSuite {
       "result = \"success\" ;" +
       "}else{" +
       "result = \"failure\" ;" +
-      "};"
+      "}"
     val interpreter: InterpreterImpl = testInitializer(content)
     assert(interpreter.getMemory()("result").get.equals("success"))
   }
