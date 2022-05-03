@@ -53,6 +53,7 @@ case class LexerImpl() extends Lexer {
           case Some(TokenTypesImpl.TYPEBOOLEAN) => throwUnsupportedFeatureException(line, column)
           case Some(TokenTypesImpl.ELSE)        => throwUnsupportedFeatureException(line, column)
           case Some(TokenTypesImpl.READINPUT)   => throwUnsupportedFeatureException(line, column)
+          case _                                =>
         }
       case "1.1" =>
       case _     => throwUnsupportedFeatureException(line, column)
