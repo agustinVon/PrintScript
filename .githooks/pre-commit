@@ -1,0 +1,5 @@
+echo "********** Running scalaFmt **********"
+./gradlew checkScalafmt
+status=$?
+echo "********** Done Running scalaFmt **********"
+exit $status
