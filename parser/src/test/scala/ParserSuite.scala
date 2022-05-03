@@ -503,7 +503,7 @@ class ParserSuite  {
 
   @Test
   def parserShouldBeAbleToParseIfStatements():Unit = {
-    val content = "if (true) { let a:number = 10 * 5 + 8; println(a); };"
+    val content = "if (true) { let a:number = 10 * 5 + 8; println(a); }"
     val lexer = LexerImpl()
     val tokens = lexer.lex(StringProgramSource(content))
     val parser = ParserImpl()
@@ -544,7 +544,7 @@ class ParserSuite  {
 
   @Test
   def parserShouldBeAbleToParseIfElseStatements():Unit = {
-    val content = "if (true) { let a:number = 10 * 5 + 8; println(a); } else { b = c * 9; };"
+    val content = "if (true) { let a:number = 10 * 5 + 8; println(a); } else { b = c * 9; }"
     val lexer = LexerImpl()
     val tokens = lexer.lex(StringProgramSource(content))
     val parser = ParserImpl()
@@ -612,7 +612,7 @@ class ParserSuite  {
 
   @Test
   def booleanDeclarationIfShouldBeParsed():Unit = {
-    val content = "let a:boolean = true; if(a){ a = b + 4; };"
+    val content = "let a:boolean = true; if(a){ a = b + 4; }"
     val lexer = LexerImpl()
     val tokens = lexer.lex(StringProgramSource(content))
     val parser = ParserImpl()

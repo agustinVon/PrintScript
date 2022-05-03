@@ -21,7 +21,8 @@ import scala.jdk.CollectionConverters._
 
 case class ParserImpl() extends Parser {
   private val strategies: List[SectionParser] =
-    List(DeclarationParser, LiteralParser, VariableParser, PrintLnParser, IfParser, ReadInputParser)
+    List(DeclarationParser, LiteralParser, VariableParser, PrintLnParser, ReadInputParser)
+  private val blockStrategies: List[SectionParser] = List(IfParser)
   override def parse(content: ProgramSource, list: List[Token]): ASTree = {
     val tokenIterator = TokenIterator.create(content.getSourceString, list.asJava)
     val tokenConsumer = TokenConsumerImpl(tokenIterator)
@@ -32,7 +33,15 @@ case class ParserImpl() extends Parser {
     if (consumer.peek(untilToken) != null) {
       tree
     } else {
-      buildTree(Root(tree.sentences :+ sentenceParse(consumer)), consumer, untilToken)
+      buildTree(Root(tree.sentences :+ buildCodeBlocks(consumer)), consumer, untilToken)
+    }
+  }
+
+  def buildCodeBlocks(consumer: TokenConsumer): ASTree = {
+    val strategy = blockStrategies.find(strategy => strategy.canBeParsed(consumer))
+    strategy match {
+      case Some(strategy) => strategy.parse(consumer)
+      case None           => sentenceParse(consumer)
     }
   }
 

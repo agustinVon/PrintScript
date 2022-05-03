@@ -17,7 +17,8 @@ case class Matches() {
     (TokenTypesImpl.NUMBER, LexerMatcherImpl.fromRegex(TokenTypesImpl.NUMBER, "-?[0-9.]+")),
     (
       TokenTypesImpl.STRING,
-      LexerMatcherImpl.fromRegex(TokenTypesImpl.STRING, "\\\"([_a-zA-Z0-9 !\\\\/.])*\\\"|'([_a-zA-Z0-9 !\\\\/.])*'")
+      LexerMatcherImpl
+        .fromRegex(TokenTypesImpl.STRING, "\\\"([_a-zA-Z0-9[:] !\\\\/.])*\\\"|'([_a-zA-Z0-9[:] !\\\\/.])*'")
     ),
     (
       TokenTypesImpl.IDENTIFIER,
