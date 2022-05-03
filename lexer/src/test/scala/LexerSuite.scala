@@ -34,21 +34,21 @@ class LexerSuite {
   @Test
   def testSingleLineLexTokenCount() = {
     val source = StringProgramSource("let num:number = 4;")
-    val tokens = LexerImpl("1.1").lex(source)
+    val tokens = LexerImpl().lex(source)
     assert(tokens.length == 8)
   }
 
   @Test
   def testMultipleLineLexTokenCount() = {
     val source = StringProgramSource("let num:number = 4;\n let num2:number = 6;")
-    val tokens = LexerImpl("1.1").lex(source)
+    val tokens = LexerImpl().lex(source)
     assert(tokens.length == 15)
   }
 
   @Test
   def testSingleLineLexTokens() = {
     val source = StringProgramSource("let num:number = 4;")
-    val tokens:List[Token] = LexerImpl("1.1").lex(source)
+    val tokens:List[Token] = LexerImpl().lex(source)
     println(tokens)
     assert(tokens.head.getType == TokenTypesImpl.LET
       && tokens(1).getType == TokenTypesImpl.IDENTIFIER

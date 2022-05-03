@@ -1,5 +1,5 @@
 package interpreter
 
 trait InputMethod {
-  def readInput(): String
+  def readInput(name: String, displayMethod: DisplayMethod): String
 }

@@ -87,8 +87,7 @@ case class InterpreterImpl() extends Interpreter {
       val msg = solveExpression(message)
       msg match {
         case Right(x: Option[String]) =>
-          displayMethod.display(x.get)
-          inputMethod.readInput() match {
+          inputMethod.readInput(x.get, displayMethod) match {
             case x: String => Right(Some(x))
             case _         => Right(Some("..."))
           }
