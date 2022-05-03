@@ -8,6 +8,19 @@ import parser.ParserImpl
 import parser.exceptions.{ExpectedEndOfLineException, ExpressionExpectedException}
 import sources.FileProgramSource
 
+class JavaApp {
+  def interpret(source: FileProgramSource): String = {
+    object result {
+      var messages:String = ""
+      def addValue(str:String):Unit = {
+        messages = messages.concat(str)
+      }
+    }
+    App.interpret(source, result.addValue)
+    result.messages
+  }
+}
+
 object App {
   private val lexer       = LexerImpl("1.1")
   private val parser      = ParserImpl()
