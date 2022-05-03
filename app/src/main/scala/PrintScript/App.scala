@@ -11,8 +11,8 @@ import sources.FileProgramSource
 class JavaApp {
   def interpret(source: FileProgramSource): String = {
     object result {
-      var messages:String = ""
-      def addValue(str:String):Unit = {
+      var messages: String = ""
+      def addValue(str: String): Unit = {
         messages = messages.concat(str)
       }
     }
