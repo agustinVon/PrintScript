@@ -16,10 +16,8 @@ import parser.exceptions.{ExpectedEndOfLineException, ExpressionExpectedExceptio
 import sources.FileProgramSource
 
 class JavaApp {
-  def interpret(source: FileProgramSource): String = {
-    val printCatcher = PrintScriptPrinterCatcher();
-    App.interpret(source, printCatcher, PrintScriptInput())
-    printCatcher.getPrintResult()
+  def interpret(source: FileProgramSource, displayMethod: DisplayMethod, inputMethod: InputMethod): Unit = {
+    App.interpret(source, displayMethod, inputMethod)
   }
 }
 
