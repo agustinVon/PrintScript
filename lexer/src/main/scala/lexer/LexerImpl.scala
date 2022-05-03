@@ -7,11 +7,12 @@ import sources.ProgramSource
 
 import java.util.regex.Matcher
 
-case class LexerImpl(version: String) extends Lexer {
+case class LexerImpl() extends Lexer {
 
   type MatchResult           = (String, Option[TokenType])
   type TokenGenerationResult = (Option[Token], Int, Int, Int)
   val matchers: List[(TokenType, LexerMatcher)] = Matches().getMatches
+  var version: String                           = "1.1"
 
   override def lex(source: ProgramSource): List[Token] = {
     val matcher = getMainMatcher(source.getSourceString)
@@ -113,5 +114,9 @@ case class LexerImpl(version: String) extends Lexer {
         )
       }
     }
+  }
+
+  override def setVersion(version: String): Unit = {
+    this.version = version
   }
 }

@@ -13,7 +13,7 @@ import scala.jdk.CollectionConverters._
 class ParserSuite  {
   private def getConsumer(content:String): TokenConsumerImpl = {
     val source = StringProgramSource(content)
-    val tokens = LexerImpl("1.1").lex(source).asJava
+    val tokens = LexerImpl().lex(source).asJava
     TokenConsumerImpl(TokenIterator.create(content, tokens))
   }
 
@@ -219,7 +219,7 @@ class ParserSuite  {
   @Test
   def tokensShouldBeParsed():Unit = {
     val content = "let a:string = \"ab\"; a = \"hello world\";"
-    val lexer = LexerImpl("1.1")
+    val lexer = LexerImpl()
     val tokens = lexer.lex(StringProgramSource(content))
     val parser = new ParserImpl()
 
@@ -351,7 +351,7 @@ class ParserSuite  {
   @Test
   def contentWithoutStrategyShouldFail():Unit = {
     val content = "();"
-    val lexer = LexerImpl("1.1")
+    val lexer = LexerImpl()
     val tokens = lexer.lex(StringProgramSource(content))
     val parser = new ParserImpl()
     assertThrows(classOf[NoStrategyException], () => parser.parse(StringProgramSource(content), tokens))
@@ -504,7 +504,7 @@ class ParserSuite  {
   @Test
   def parserShouldBeAbleToParseIfStatements():Unit = {
     val content = "if (true) { let a:number = 10 * 5 + 8; println(a); };"
-    val lexer = LexerImpl("1.1")
+    val lexer = LexerImpl()
     val tokens = lexer.lex(StringProgramSource(content))
     val parser = ParserImpl()
 
@@ -545,7 +545,7 @@ class ParserSuite  {
   @Test
   def parserShouldBeAbleToParseIfElseStatements():Unit = {
     val content = "if (true) { let a:number = 10 * 5 + 8; println(a); } else { b = c * 9; };"
-    val lexer = LexerImpl("1.1")
+    val lexer = LexerImpl()
     val tokens = lexer.lex(StringProgramSource(content))
     val parser = ParserImpl()
 
@@ -613,7 +613,7 @@ class ParserSuite  {
   @Test
   def booleanDeclarationIfShouldBeParsed():Unit = {
     val content = "let a:boolean = true; if(a){ a = b + 4; };"
-    val lexer = LexerImpl("1.1")
+    val lexer = LexerImpl()
     val tokens = lexer.lex(StringProgramSource(content))
     val parser = ParserImpl()
 
@@ -636,7 +636,7 @@ class ParserSuite  {
   @Test
   def parserShouldBeAbleToParseReadInputAsValue(): Unit = {
     val content = "let a:string = readInput(\"test\");"
-    val lexer = LexerImpl("1.1")
+    val lexer = LexerImpl()
     val tokens = lexer.lex(StringProgramSource(content))
     val parser = ParserImpl()
 

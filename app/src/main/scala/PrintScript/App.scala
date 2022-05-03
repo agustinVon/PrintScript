@@ -7,8 +7,7 @@ import interpreter.{
   InputMethod,
   InterpreterImpl,
   PrintScriptInput,
-  PrintScriptPrinter,
-  PrintScriptPrinterCatcher
+  PrintScriptPrinter
 }
 import lexer.LexerImpl
 import parser.ParserImpl
@@ -16,24 +15,30 @@ import parser.exceptions.{ExpectedEndOfLineException, ExpressionExpectedExceptio
 import sources.FileProgramSource
 
 class JavaApp {
-  def interpret(source: FileProgramSource, displayMethod: DisplayMethod, inputMethod: InputMethod): Unit = {
-    App.interpret(source, displayMethod, inputMethod)
+  def interpret(
+      source: FileProgramSource,
+      version: String,
+      displayMethod: DisplayMethod,
+      inputMethod: InputMethod
+  ): Unit = {
+    App.interpret(source, version: String, displayMethod, inputMethod)
   }
 }
 
 object App {
-  private val lexer       = LexerImpl("1.1")
+  private val lexer       = LexerImpl()
   private val parser      = ParserImpl()
   private val interpreter = InterpreterImpl()
 
   def main(args: Array[String]): Unit = {
     displayIntro(println)
-    val path: String = displayPathOption(println)
-    val option: Int  = displayMenu(println)
+    val version: String = displayVersionSelection(PrintScriptPrinter())
+    val path: String    = displayPathOption(PrintScriptPrinter())
+    val option: Int     = displayMenu(PrintScriptPrinter())
 
     if (option == 1) {
       try {
-        interpret(FileProgramSource(path), PrintScriptPrinter(), PrintScriptInput())
+        interpret(FileProgramSource(path), version, PrintScriptPrinter(), PrintScriptInput())
       } catch {
         case e: ExpectedEndOfLineException =>
           println("ERROR\ncolumn: " + e.position + " line: " + e.line)
@@ -48,7 +53,7 @@ object App {
 
     if (option == 2) {
       try {
-        validate(FileProgramSource(path), println)
+        validate(FileProgramSource(path), version)
       } catch {
         case e: Exception =>
           println("Validation failed")
@@ -57,13 +62,20 @@ object App {
     }
   }
 
-  def interpret(source: FileProgramSource, displayMethod: DisplayMethod, inputMethod: InputMethod): Unit = {
+  def interpret(
+      source: FileProgramSource,
+      version: String,
+      displayMethod: DisplayMethod,
+      inputMethod: InputMethod
+  ): Unit = {
+    lexer.setVersion(version)
     val tokens = lexer.lex(source)
     val ast    = parser.parse(source, tokens)
     interpreter.interpret(ast, displayMethod, inputMethod)
   }
 
-  def validate(source: FileProgramSource, displayMethod: (String) => Unit): Unit = {
+  def validate(source: FileProgramSource, version: String): Unit = {
+    lexer.setVersion(version)
     val tokens = lexer.lex(source)
     val ast    = parser.parse(source, tokens)
     interpreter.validate(ast)
@@ -84,16 +96,22 @@ object App {
     displayMethod("")
   }
 
-  def displayPathOption(displayMethod: (String) => Unit): String = {
-    displayMethod("Path to file: ")
-    displayMethod("")
+  def displayVersionSelection(displayMethod: DisplayMethod): String = {
+    displayMethod.display("1.0 or 1.1?")
+    displayMethod.display("")
     scala.io.StdIn.readLine()
   }
 
-  def displayMenu(displayMethod: (String) => Unit): Int = {
-    displayMethod("1. Interpret")
-    displayMethod("2. Validate")
-    displayMethod("")
+  def displayPathOption(displayMethod: DisplayMethod): String = {
+    displayMethod.display("Path to file: ")
+    displayMethod.display("")
+    scala.io.StdIn.readLine()
+  }
+
+  def displayMenu(displayMethod: DisplayMethod): Int = {
+    displayMethod.display("1. Interpret")
+    displayMethod.display("2. Validate")
+    displayMethod.display("")
     val option = scala.io.StdIn.readInt()
     if (option == 1 || option == 2) {
       option
