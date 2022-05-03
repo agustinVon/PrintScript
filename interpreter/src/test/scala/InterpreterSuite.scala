@@ -499,4 +499,14 @@ class InterpreterSuite {
     assert(interpreter.getMemory()("myText").get.equals("TextInputResult"))
   }
 
+  @Test
+  def testttt(): Unit = {
+    val content = "let numberResult: number = 5 * 5 - 8;\nprintln(numberResult);"
+    val tokens = LexerImpl("1.1").lex(StringProgramSource(content))
+    val ast = ParserImpl().parse(StringProgramSource(content), tokens)
+    val interpreter = InterpreterImpl()
+    interpreter.interpret(ast, PrintScriptPrinter(), PrintScriptInputTest("TextInputResult"))
+    assert(interpreter.getMemory()("numberResult").get==17)
+  }
+
 }
