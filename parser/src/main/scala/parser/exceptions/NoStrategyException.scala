@@ -1,3 +1,5 @@
 package parser.exceptions
 
-case class NoStrategyException() extends Exception {}
+case class NoStrategyException() extends Exception {
+    @Override override def getMessage: String = "No strat"
+}
