@@ -40,7 +40,7 @@ case class InterpreterImpl() extends Interpreter {
   private var constantValues: Map[String, Option[Any]]         = Map()
   private var validationPhase: Boolean                         = false
   private val operationSolver: OperationSolver                 = OperationSolverImpl()
-  private var displayMethod: DisplayMethod  = PrintScriptPrinter()
+  private var displayMethod: DisplayMethod                     = PrintScriptPrinter()
   private var inputMethod: InputMethod                         = PrintScriptInput()
 
   override def interpret(ast: ASTree, displayMethod: DisplayMethod, input: InputMethod): Unit = {
