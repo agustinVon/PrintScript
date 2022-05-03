@@ -15,16 +15,20 @@ class JavaApp {
       displayMethod: DisplayMethod,
       inputMethod: InputMethod
   ): Unit = {
-    App.interpret(source, version: String, displayMethod, inputMethod)
+    InterpreterApp().interpret(source, version: String, displayMethod, inputMethod)
   }
 }
 
-object App {
+object CLI extends App {
+  InterpreterApp().run()
+}
+
+case class InterpreterApp() {
   private val lexer       = LexerImpl()
   private val parser      = ParserImpl()
   private val interpreter = InterpreterImpl()
 
-  def main(args: Array[String]): Unit = {
+  def run(): Unit = {
     displayIntro(println)
     val version: String = displayVersionSelection(PrintScriptPrinter())
     val path: String    = displayPathOption(PrintScriptPrinter())
