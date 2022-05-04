@@ -15,3 +15,6 @@ gradle scalafmt
 gradle reportScoverage
 
 report is stored in build/reports/coverage in each module
+
+## Set githooks
+git config --local core.hooksPath .githooks/
